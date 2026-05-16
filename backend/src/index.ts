@@ -1,5 +1,5 @@
 import Fastify from "fastify";
-import { Yapper } from "./utils/Yapper";
+import { Yapper } from "./utils/Yapper.js";
 
 const server = Fastify({
 	loggerInstance: new Yapper()
