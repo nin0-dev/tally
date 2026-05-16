@@ -1,4 +1,4 @@
-import { Kysely, SqliteDialect } from "kysely";
+import { Kysely, sql, SqliteDialect } from "kysely";
 import SQLite from "better-sqlite3";
 import { type DB } from "kysely-codegen";
 
@@ -9,3 +9,5 @@ const dialect = new SqliteDialect({
 export const db = new Kysely<DB>({
 	dialect
 });
+
+sql`PRAGMA foreign_keys = ON;`.execute(db);

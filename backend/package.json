@@ -4,8 +4,8 @@
 		"esbuild": "^0.28.0",
 		"fastify": "^5.8.5",
 		"kysely": "^0.29.2",
-		"kysely-codegen": "^0.20.0",
-		"typescript": "^6.0.3"
+		"typescript": "^6.0.3",
+		"zod": "^4.4.3"
 	},
 	"type": "module",
 	"scripts": {
@@ -15,6 +15,7 @@
 	},
 	"devDependencies": {
 		"@types/better-sqlite3": "^7.6.13",
-		"@types/node": "^25.8.0"
+		"@types/node": "^25.8.0",
+		"kysely-codegen": "^0.20.0"
 	}
 }

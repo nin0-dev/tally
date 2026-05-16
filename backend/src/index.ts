@@ -1,13 +1,12 @@
 import Fastify from "fastify";
 import { Yapper } from "./utils/Yapper.js";
+import { setupAccountRoutes } from "./routes/accounts.js";
 
-const server = Fastify({
+export const server = Fastify({
 	loggerInstance: new Yapper()
 });
 
-server.get("/", (req, res) => {
-	return { hello: "world" };
-});
+setupAccountRoutes();
 
 server.listen({
 	port: parseInt(process.env.PORT ?? "6969")
