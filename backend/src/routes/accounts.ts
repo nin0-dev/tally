@@ -7,6 +7,36 @@ import { generateID } from "../utils/utils.js";
 import z from "zod";
 
 export function setupAccountRoutes() {
+	server.get("/accounts", async (req, res) => {
+		const u = await getUserIDForRequest(req);
+		if (!u) return void res.status(401).send();
+
+		const user = await db
+			.selectFrom("users")
+			.select(["name", "id", "allow_transfer"])
+			.executeTakeFirstOrThrow();
+
+		// @ts-ignore
+		user.allow_transfer = !!user.allow_transfer;
+
+		return user;
+	});
+
+	server.post("/accounts/rotate", async (req, res) => {
+		const u = await getUserIDForRequest(req);
+		if (!u) return void res.status(401).send();
+
+		const key = generateID(16);
+
+		await db
+			.updateTable("users")
+			.set("pass", await hash(key))
+			.where("id", "=", u)
+			.execute();
+
+		return { key };
+	});
+
 	server.post("/accounts", async req => {
 		const [accountID, key] = [generateID(12), generateID(16)];
 		const { name } = TBCUser.parse(req.body);
