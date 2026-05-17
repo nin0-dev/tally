@@ -120,7 +120,7 @@ export function setupDeckRoutes() {
 				.select("allow_transfer")
 				.where("id", "=", owner)
 				.executeTakeFirst();
-			if (!resp?.allow_transfer) return void res.code(404).send();
+			if (!resp) return void res.code(404).send();
 			const { allow_transfer } = resp;
 			if (allow_transfer !== 1) return void res.code(403).send();
 			await db
