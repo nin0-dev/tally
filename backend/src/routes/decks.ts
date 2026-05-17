@@ -63,7 +63,22 @@ export function setupDeckRoutes() {
 			content?: string;
 		} = {};
 		if (name) pendingUpdates.name = name;
-		if (owner) pendingUpdates.owner = owner;
+		if (owner) {
+			const { allow_transfer } = await db
+				.selectFrom("users")
+				.select("allow_transfer")
+				.where("id", "=", owner)
+				.executeTakeFirstOrThrow();
+			if (allow_transfer !== 1) return void res.code(403).send();
+			await db
+				.updateTable("users")
+				.set({
+					allow_transfer: 0
+				})
+				.where("id", "=", owner)
+				.execute();
+			pendingUpdates.owner = owner;
+		}
 		if (questions) {
 			const existingQuestions: z.infer<typeof Question>[] =
 				JSON.parse(deck.content ?? "[]") ?? [];
@@ -84,11 +99,15 @@ export function setupDeckRoutes() {
 
 		await db
 			.updateTable("decks")
-			.where("id", "=", id)
 			.set(pendingUpdates)
+			.where("id", "=", id)
 			.execute();
 		return {
-			name: pendingUpdates.name ?? name
+			name: pendingUpdates.name ?? deck.name,
+			id: pendingUpdates.id ?? deck.id,
+			questions: pendingUpdates.content
+				? JSON.parse(pendingUpdates.content)
+				: JSON.parse(deck.content ?? "[]")
 		};
 	});
 
