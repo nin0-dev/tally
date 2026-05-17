@@ -37,6 +37,24 @@ export function setupAccountRoutes() {
 		return { key };
 	});
 
+	server.get("/accounts/export", async (req, res) => {
+		const u = await getUserIDForRequest(req);
+		if (!u) return void res.status(401).send();
+
+		const decks = await db
+			.selectFrom("decks")
+			.select(["id", "name", "content"])
+			.where("owner", "=", u)
+			.execute();
+		const plays = await db
+			.selectFrom("plays")
+			.select(["deck", "last_played", "questions"])
+			.where("user", "=", u)
+			.execute();
+
+		return { decks, plays };
+	});
+
 	server.post("/accounts", async req => {
 		const [accountID, key] = [generateID(12), generateID(16)];
 		const { name } = TBCUser.parse(req.body);
