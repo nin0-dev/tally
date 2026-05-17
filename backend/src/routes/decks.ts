@@ -9,7 +9,7 @@ import z from "zod";
 function validateDeckID(req: FastifyRequest) {
 	const { id }: { id: string } = req.params as any;
 	if (!id || !/^[0-9a-f]{12}$/.test(id)) {
-		throw "Invalid deck";
+		throw new Error("Invalid deck");
 	}
 	return id;
 }
@@ -41,7 +41,7 @@ export function setupDeckRoutes() {
 			.object({
 				name: z.string().optional(),
 				owner: z.string().optional(),
-				questions: z.array(Question)
+				questions: z.array(Question).optional()
 			})
 			.parse(req.body);
 		const id = validateDeckID(req);
@@ -64,11 +64,13 @@ export function setupDeckRoutes() {
 		} = {};
 		if (name) pendingUpdates.name = name;
 		if (owner) {
-			const { allow_transfer } = await db
+			const resp = await db
 				.selectFrom("users")
 				.select("allow_transfer")
 				.where("id", "=", owner)
-				.executeTakeFirstOrThrow();
+				.executeTakeFirst();
+			if (!resp?.allow_transfer) return void res.code(404).send();
+			const { allow_transfer } = resp;
 			if (allow_transfer !== 1) return void res.code(403).send();
 			await db
 				.updateTable("users")
@@ -104,7 +106,7 @@ export function setupDeckRoutes() {
 			.execute();
 		return {
 			name: pendingUpdates.name ?? deck.name,
-			id: pendingUpdates.id ?? deck.id,
+			id: deck.id,
 			questions: pendingUpdates.content
 				? JSON.parse(pendingUpdates.content)
 				: JSON.parse(deck.content ?? "[]")
