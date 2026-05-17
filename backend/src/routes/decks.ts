@@ -141,11 +141,14 @@ export function setupDeckRoutes() {
 			pendingUpdates.content = JSON.stringify(newQuestions);
 		}
 
-		await db
-			.updateTable("decks")
-			.set(pendingUpdates)
-			.where("id", "=", id)
-			.execute();
+		if (Object.keys(pendingUpdates).length > 0) {
+			await db
+				.updateTable("decks")
+				.set(pendingUpdates)
+				.where("id", "=", id)
+				.execute();
+		}
+
 		return {
 			name: pendingUpdates.name ?? deck.name,
 			id: deck.id,
