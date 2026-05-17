@@ -78,5 +78,7 @@ export function setupPlayRoutes() {
 				})
 				.execute();
 		}
+
+		res.code(204).send();
 	});
 }
