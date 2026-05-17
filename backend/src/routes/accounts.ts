@@ -4,6 +4,7 @@ import { getUserIDForRequest } from "../utils/auth.js";
 import { db } from "../utils/db.js";
 import { AuthedUser, TBCUser } from "../utils/types.js";
 import { generateID } from "../utils/utils.js";
+import z from "zod";
 
 export function setupAccountRoutes() {
 	server.post("/accounts", async req => {
@@ -31,5 +32,35 @@ export function setupAccountRoutes() {
 		await db.deleteFrom("plays").where("user", "=", u).execute();
 
 		res.status(204).send();
+	});
+
+	server.put("/accounts", async (req, res) => {
+		const u = await getUserIDForRequest(req);
+		if (!u) return void res.status(401).send();
+
+		const { name, allow_transfer } = z
+			.object({
+				name: z.string().optional(),
+				allow_transfer: z.boolean().optional()
+			})
+			.parse(req.body);
+
+		const pendingUpdates: {
+			name?: string;
+			allow_transfer?: number;
+		} = {};
+		if (name) pendingUpdates.name = name;
+		if (allow_transfer !== undefined)
+			pendingUpdates.allow_transfer = Number(allow_transfer);
+
+		if (Object.keys(pendingUpdates).length > 0) {
+			await db
+				.updateTable("users")
+				.set(pendingUpdates)
+				.where("id", "=", u)
+				.execute();
+		}
+
+		res.code(204).send();
 	});
 }
