@@ -51,7 +51,7 @@ export function setupPlayRoutes() {
 			for (const [questionID, status] of Object.entries(body)) {
 				if (qs[questionID]) {
 					qs[questionID] += status;
-					if (qs[questionID].length >= 7) {
+					if (qs[questionID].length > 7) {
 						qs[questionID] = qs[questionID].slice(1);
 					}
 				} else {
