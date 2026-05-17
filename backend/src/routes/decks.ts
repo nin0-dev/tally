@@ -5,7 +5,82 @@ import { Question, TBCDeck } from "../utils/types.js";
 import { generateID, validateDeckID } from "../utils/utils.js";
 import z from "zod";
 
+function calculatePriority(history?: string) {
+	const baseScore = (() => {
+		if (!history) return 100;
+
+		const [last = null, prev = null, prev2 = null] = history
+			.split("")
+			.toReversed();
+
+		if ([last, prev, prev2].every(t => t === "F")) return 300; // last 3 attempts were a fail
+		if ([last, prev].every(t => t === "F")) return 250; // last 2 attempts were a fail
+		if (last === "F") return 200; // last attempt was a fail
+		if (last === "U") return 150; // last attempt, they forgot
+
+		let pastRight = 0; // consecutive success attempts, lower the card's priority
+		for (const item of history.split("").toReversed()) {
+			if (item === "S") pastRight++;
+			else break;
+		}
+
+		return (
+			100 -
+			pastRight * 50 +
+			(["F", "U"].includes(prev ?? "")
+				? 30
+				: 0) /* if the prev-last attempt was a failure, penalise by 30 */
+		);
+	})();
+	return baseScore + Math.random() * 10;
+}
+
 export function setupDeckRoutes() {
+	server.get("/deck/:id/queue", async (req, res) => {
+		const deckID = validateDeckID(req);
+
+		try {
+			var deckQuestions = z
+				.array(Question)
+				.parse(
+					JSON.parse(
+						(
+							await db
+								.selectFrom("decks")
+								.select("content")
+								.where("id", "=", deckID)
+								.executeTakeFirstOrThrow()
+						).content ?? "[]"
+					)
+				);
+		} catch {
+			return void res.code(404).send();
+		}
+
+		const u = await getUserIDForRequest(req);
+		let history: Record<string, string> = {};
+		if (u) {
+			const playData = await db
+				.selectFrom("plays")
+				.select("questions")
+				.where("user", "=", u)
+				.where("deck", "=", deckID)
+				.executeTakeFirst();
+
+			if (playData?.questions) {
+				history = JSON.parse(playData.questions);
+			}
+		}
+
+		const qsWithScore = deckQuestions.map(q => ({
+			...q,
+			score: calculatePriority(history[q.id ?? ""])
+		}));
+		qsWithScore.sort((a, b) => b.score - a.score);
+
+		return qsWithScore;
+	});
+
 	server.get("/deck/:id", async (req, res) => {
 		if (!(req.params as any).id) return void res.status(400).send();
 		const { id }: { id: string } = req.params as any;
