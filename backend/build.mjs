@@ -13,6 +13,7 @@ await esbuild.build({
 		"tarn",
 		"tedious",
 		"@tediousjs/connection-string",
-		"better-sqlite3"
+		"better-sqlite3",
+		"argon2"
 	]
 });
