@@ -1,11 +1,21 @@
+import type { FastifyRequest } from "fastify";
 import { server } from "../index.js";
 import { getUserIDForRequest } from "../utils/auth.js";
 import { db } from "../utils/db.js";
-import { TBCDeck } from "../utils/types.js";
+import { Question, TBCDeck } from "../utils/types.js";
 import { generateID } from "../utils/utils.js";
+import z from "zod";
+
+function validateDeckID(req: FastifyRequest) {
+	const { id }: { id: string } = req.params as any;
+	if (!id || !/^[0-9a-f]{12}$/.test(id)) {
+		throw "Invalid deck";
+	}
+	return id;
+}
 
 export function setupDeckRoutes() {
-	server.put("/deck", async (req, res) => {
+	server.post("/deck", async (req, res) => {
 		const u = await getUserIDForRequest(req);
 		if (!u) return void res.status(401).send();
 
@@ -24,12 +34,68 @@ export function setupDeckRoutes() {
 		return { id };
 	});
 
-	server.delete("/deck/:id", async (req, res) => {
-		const { id }: { id: string } = req.params as any;
-		if (!id || !/^[0-9a-f]{12}$/.test(id))
-			return void res.status(400).send();
+	server.put("/deck/:id", async (req, res) => {
 		const u = await getUserIDForRequest(req);
 		if (!u) return void res.status(401).send();
+		const { name, owner, questions } = z
+			.object({
+				name: z.string().optional(),
+				owner: z.string().optional(),
+				questions: z.array(Question)
+			})
+			.parse(req.body);
+		const id = validateDeckID(req);
+
+		try {
+			var deck = await db
+				.selectFrom("decks")
+				.selectAll()
+				.where("id", "=", id)
+				.executeTakeFirstOrThrow();
+		} catch {
+			return void res.status(404).send();
+		}
+		if (deck.owner !== u) return void res.status(404).send();
+
+		const pendingUpdates: {
+			name?: string;
+			owner?: string;
+			content?: string;
+		} = {};
+		if (name) pendingUpdates.name = name;
+		if (owner) pendingUpdates.owner = owner;
+		if (questions) {
+			const existingQuestions: z.infer<typeof Question>[] =
+				JSON.parse(deck.content ?? "[]") ?? [];
+			const allowedIDs = new Set(
+				existingQuestions.filter(t => t.id).map(t => t.id)
+			);
+			const usedIDs = new Set();
+
+			const newQuestions = questions.map(q => {
+				const allowOldID =
+					q.id && allowedIDs.has(q.id) && !usedIDs.has(q.id);
+				q.id = allowOldID ? q.id : generateID(12);
+				usedIDs.add(q.id);
+				return q;
+			});
+			pendingUpdates.content = JSON.stringify(newQuestions);
+		}
+
+		await db
+			.updateTable("decks")
+			.where("id", "=", id)
+			.set(pendingUpdates)
+			.execute();
+		return {
+			name: pendingUpdates.name ?? name
+		};
+	});
+
+	server.delete("/deck/:id", async (req, res) => {
+		const u = await getUserIDForRequest(req);
+		if (!u) return void res.status(401).send();
+		const id = validateDeckID(req);
 
 		try {
 			var deck = await db

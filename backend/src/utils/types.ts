@@ -11,9 +11,10 @@ export const TBCUser = AuthedUser.pick({
 });
 
 export const Question = z.object({
+	id: z.string().optional(),
 	question: z.string(),
-	answer: z.string(),
-	category: z.string()
+	answer: z.string().optional(),
+	category: z.string().optional()
 });
 
 export const Deck = z.object({
