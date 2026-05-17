@@ -15,6 +15,57 @@ function validateDeckID(req: FastifyRequest) {
 }
 
 export function setupDeckRoutes() {
+	server.get("/deck/:id", async (req, res) => {
+		if (!(req.params as any).id) return void res.status(400).send();
+		const { id }: { id: string } = req.params as any;
+		if (id === "@me") {
+			const u = await getUserIDForRequest(req);
+			if (!u) return void res.status(401).send();
+
+			const ownedDecks = await db
+				.selectFrom("decks")
+				.select(["name", "id"])
+				.where("owner", "=", u)
+				.execute();
+
+			return ownedDecks;
+		} else {
+			let deck: {
+				owner: string;
+				content: string | null;
+				id: string;
+				name: string;
+				owner_name: string;
+			};
+			try {
+				deck = await db
+					.selectFrom("decks")
+					.innerJoin("users", "users.id", "decks.owner")
+					.select([
+						"decks.id",
+						"decks.name",
+						"decks.owner",
+						"decks.content",
+						"users.name as owner_name"
+					])
+					.where("decks.id", "=", id)
+					.executeTakeFirstOrThrow();
+			} catch {
+				return void res.code(404).send();
+			}
+
+			return {
+				id: deck.id,
+				name: deck.name,
+				questions: JSON.parse(deck.content ?? "[]"),
+				owner: {
+					name: deck.owner_name,
+					id: deck.owner
+				}
+			};
+		}
+	});
+
 	server.post("/deck", async (req, res) => {
 		const u = await getUserIDForRequest(req);
 		if (!u) return void res.status(401).send();
