@@ -81,4 +81,18 @@ export function setupPlayRoutes() {
 
 		res.code(204).send();
 	});
+
+	server.delete("/plays/:id", async (req, res) => {
+		const u = await getUserIDForRequest(req);
+		if (!u) return void res.code(401).send();
+		const id = validateDeckID(req);
+
+		await db
+			.deleteFrom("plays")
+			.where("deck", "=", id)
+			.where("user", "=", u)
+			.execute();
+
+		res.code(204).send();
+	});
 }
