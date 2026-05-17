@@ -1,18 +1,9 @@
-import type { FastifyRequest } from "fastify";
 import { server } from "../index.js";
 import { getUserIDForRequest } from "../utils/auth.js";
 import { db } from "../utils/db.js";
 import { Question, TBCDeck } from "../utils/types.js";
-import { generateID } from "../utils/utils.js";
+import { generateID, validateDeckID } from "../utils/utils.js";
 import z from "zod";
-
-function validateDeckID(req: FastifyRequest) {
-	const { id }: { id: string } = req.params as any;
-	if (!id || !/^[0-9a-f]{12}$/.test(id)) {
-		throw new Error("Invalid deck");
-	}
-	return id;
-}
 
 export function setupDeckRoutes() {
 	server.get("/deck/:id", async (req, res) => {
