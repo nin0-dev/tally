@@ -7,7 +7,7 @@ import { generateID } from "../utils/utils.js";
 
 export function setupAccountRoutes() {
 	server.post("/accounts", async req => {
-		const [accountID, key] = [generateID(), generateID()];
+		const [accountID, key] = [generateID(12), generateID(16)];
 		const { name } = TBCUser.parse(req.body);
 
 		await db

@@ -10,7 +10,7 @@ export function setupDeckRoutes() {
 		if (!u) return void res.status(401).send();
 
 		const data = TBCDeck.parse(req.body);
-		const id = generateID();
+		const id = generateID(12);
 
 		await db
 			.insertInto("decks")
