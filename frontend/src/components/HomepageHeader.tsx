@@ -1,22 +1,33 @@
-import { Button, Flex, Text, useComputedColorScheme } from "@mantine/core";
+import { Button, Flex, Text } from "@mantine/core";
 
 export default function HomepageHeader() {
-	const scheme = useComputedColorScheme("light");
-
 	return (
-		<Flex direction="column" gap="sm" align="center">
+		<Flex
+			direction="column"
+			gap="sm"
+			align="center"
+			style={{ marginBottom: "var(--mantine-spacing-sm)" }}
+		>
 			<Text
-				ff="monospace"
 				fw={700}
 				style={{
 					fontSize: "2.5rem",
 					lineHeight: "3rem",
-					textAlign: "center"
+					textAlign: "center",
+					fontFamily: "Space Grotesk, sans-serif"
 				}}
 			>
 				The simple, yet powerful, flashcard utility
 			</Text>
-			<Button size="lg">Start studying</Button>
+			<Button
+				size="lg"
+				style={{
+					margin: "var(--mantine-spacing-sm) 0",
+					marginBottom: "var(--mantine-spacing-lg)"
+				}}
+			>
+				Start studying
+			</Button>
 		</Flex>
 	);
 }

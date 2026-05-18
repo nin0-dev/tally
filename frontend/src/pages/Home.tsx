@@ -45,8 +45,8 @@ export default function Home() {
 	return (
 		<Box>
 			<HomepageHeader />
-			<Divider style={{ margin: "15px 0" }} />
-			<Title order={2} style={{ marginBottom: "15px" }}>
+			<Divider />
+			<Title order={2} style={{ margin: "var(--mantine-spacing-xl) 0" }}>
 				Why use Cardy?
 			</Title>
 			<Grid>
@@ -79,7 +79,7 @@ export default function Home() {
 					/>
 				</Grid.Col>
 			</Grid>
-			<Divider style={{ margin: "15px 0" }} />
+			<Divider style={{ margin: "var(--mantine-spacing-xl) 0" }} />
 			<Text
 				style={{
 					lineHeight: "1.6rem"
