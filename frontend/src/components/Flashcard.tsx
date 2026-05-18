@@ -47,13 +47,10 @@ export default function Flashcard({
 							? "rotateX(180deg)"
 							: "rotateX(0deg)",
 						backgroundColor:
-							scheme === "light"
-								? "var(--mandine-color-gray-1)"
-								: undefined,
-						backgroundImage: `linear-gradient(var(--mantine-color-${scheme === "light" ? "gray-1" : "dark-4"}) 2px, transparent 2px)`,
+							scheme === "light" ? "#f6f6f6" : undefined,
+						backgroundImage: `${!showAnswer && !hideAll ? `linear-gradient(to right, transparent 20px, var(--mantine-color-red-${scheme === "light" ? 9 : 2}) 20px, var(--mantine-color-red-${scheme === "light" ? 9 : 2}) 22px, transparent 22px),` : ""} linear-gradient(var(--mantine-color-${scheme === "light" ? "gray-2" : "dark-7"}) 2px, transparent 2px)`,
 						backgroundSize: "100% 1rem",
-						backgroundPosition: "center",
-						lineHeight: "2.5rem"
+						backgroundPosition: "center"
 					}}
 				>
 					<Box
