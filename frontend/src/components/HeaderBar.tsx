@@ -10,7 +10,10 @@ export default function HeaderBar() {
 		>
 			<Title order={2}>Cardy</Title>
 
-			<Button style={{ marginLeft: "auto" }}>Sign up</Button>
+			<Button style={{ marginLeft: "auto" }} variant="outline">
+				Login
+			</Button>
+			<Button>Register</Button>
 		</Group>
 	);
 }
