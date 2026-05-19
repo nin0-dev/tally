@@ -86,15 +86,16 @@ export default function Home() {
 					color: "var(--mantine-color-dimmed)"
 				}}
 			>
-				Not enough? Signing up will take ten seconds and you will be
-				able to make a flashcard deck to see Cardy in action, and
-				determine if this is the right tool for you.
+				Not enough? Signing up is a quick process and will allow you to
+				make a flashcard deck to see Cardy in action, and determine if
+				this is the right tool for you.
 				<br />
 				<br />
 				Accounts are only used to sync your decks across devices,
 				absolutely no personal information is collected.
 				<br />
-				Cardy is also <Link href="/source">open-source</Link>.
+				Cardy is also{" "}
+				<Link href="https://git.nin0.dev/nin0/cardy">open-source</Link>.
 			</Text>
 		</Box>
 	);
