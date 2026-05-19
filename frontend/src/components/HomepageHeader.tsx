@@ -1,6 +1,10 @@
 import { Button, Flex, Text } from "@mantine/core";
+import { showRegistrationModal } from "../utils/modals";
+import { useMediaQuery } from "@mantine/hooks";
 
 export default function HomepageHeader() {
+	const isMobile = useMediaQuery("(max-width: 50em)");
+
 	return (
 		<Flex
 			direction="column"
@@ -25,6 +29,7 @@ export default function HomepageHeader() {
 					margin: "var(--mantine-spacing-sm) 0",
 					marginBottom: "var(--mantine-spacing-lg)"
 				}}
+				onClick={() => showRegistrationModal(isMobile)}
 			>
 				Start studying
 			</Button>
