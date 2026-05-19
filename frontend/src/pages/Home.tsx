@@ -82,7 +82,8 @@ export default function Home() {
 			<Divider style={{ margin: "var(--mantine-spacing-xl) 0" }} />
 			<Text
 				style={{
-					lineHeight: "1.6rem"
+					lineHeight: "2rem",
+					color: "var(--mantine-color-dimmed)"
 				}}
 			>
 				Not enough? Signing up will take ten seconds and you will be
