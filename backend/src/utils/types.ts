@@ -6,8 +6,9 @@ export const AuthedUser = z.object({
 	name: z.string()
 });
 
-export const TBCUser = AuthedUser.pick({
-	name: true
+export const TBCUser = z.object({
+	name: z.string(),
+	turnstile: z.string()
 });
 
 export const Question = z.object({

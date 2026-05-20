@@ -5,6 +5,7 @@ import { db } from "../utils/db.js";
 import { AuthedUser, TBCUser } from "../utils/types.js";
 import { generateID } from "../utils/utils.js";
 import z from "zod";
+import { validateTurnstile } from "../utils/turnstile.js";
 
 export function setupAccountRoutes() {
 	server.get("/accounts", async (req, res) => {
@@ -55,9 +56,12 @@ export function setupAccountRoutes() {
 		return { decks, plays };
 	});
 
-	server.post("/accounts", async req => {
+	server.post("/accounts", async (req, res) => {
 		const [accountID, key] = [generateID(12), generateID(16)];
-		const { name } = TBCUser.parse(req.body);
+		const { name, turnstile } = TBCUser.parse(req.body);
+
+		if (!(await validateTurnstile(turnstile)))
+			return void res.code(403).send();
 
 		await db
 			.insertInto("users")
