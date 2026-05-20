@@ -10,9 +10,10 @@ import { useForm } from "@mantine/form";
 import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
 import { useRef, useState } from "react";
 import { RestAPI } from "../utils/RestAPI";
-import type { ContextModalProps } from "@mantine/modals";
+import { closeModal, type ContextModalProps } from "@mantine/modals";
 import { lockModal, unlockModal } from "../utils/modals";
 import Spin from "./Spin";
+import { showErrorNotification } from "../utils/notify";
 
 export default function RegistrationModal({ context, id }: ContextModalProps) {
 	const [spin, setSpin] = useState(false);
@@ -38,11 +39,22 @@ export default function RegistrationModal({ context, id }: ContextModalProps) {
 		<Box pos="relative">
 			<Spin show={spin} />
 			<form
-				onSubmit={form.onSubmit(async vals => {
+				onSubmit={form.onSubmit(async body => {
 					lockModal(id, context, setSpin);
-					const req = await RestAPI.post("/accounts", vals);
-                    if (!req.ok) {
-                        
+					const req = await RestAPI.post("/accounts", {
+						body,
+						errors: {
+							403: "CAPTCHA error"
+						}
+					});
+					if (!req.ok) {
+						unlockModal(id, context, setSpin);
+						showErrorNotification({
+							title: "Registration error",
+							message: req.error
+						});
+					} else {
+						closeModal(id);
 					}
 				})}
 			>
