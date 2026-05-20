@@ -1,5 +1,6 @@
 {
 	"dependencies": {
+		"@fastify/cors": "^11.2.0",
 		"argon2": "^0.44.0",
 		"better-sqlite3": "^12.10.0",
 		"esbuild": "^0.28.0",
@@ -12,7 +13,7 @@
 	"scripts": {
 		"generateSchema": "DATABASE_URL=database.db kysely-codegen",
 		"build": "node build.mjs",
-		"start": "node dist/index.cjs"
+		"start": "node --env-file-if-exists=.env dist/index.cjs"
 	},
 	"devDependencies": {
 		"@types/better-sqlite3": "^7.6.13",
