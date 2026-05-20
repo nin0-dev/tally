@@ -1,10 +1,29 @@
-import { modals } from "@mantine/modals";
-import RegistrationModal from "../components/RegistrationModal";
-
-export function showRegistrationModal(fullScreen: boolean) {
-	modals.open({
-		title: "Register",
-		fullScreen,
-		children: <RegistrationModal />
+export function lockModal(
+	id: string,
+	context: any,
+	setSpin: (arg0: boolean) => void
+) {
+	context.updateContextModal({
+		modalId: id,
+		withCloseButton: false,
+		closeOnEscape: false,
+		closeOnClickOutside: false,
+		closeButtonProps: { disabled: true }
 	});
+	setSpin(true);
+}
+
+export function unlockModal(
+	id: string,
+	context: any,
+	setSpin: (arg0: boolean) => void
+) {
+	context.updateContextModal({
+		modalId: id,
+		withCloseButton: true,
+		closeOnEscape: true,
+		closeOnClickOutside: true,
+		closeButtonProps: { disabled: false }
+	});
+	setSpin(false);
 }

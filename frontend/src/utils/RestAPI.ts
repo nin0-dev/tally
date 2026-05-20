@@ -5,7 +5,11 @@ export const RestAPI = {
 		method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE",
 		endpoint: Endpoint,
 		body?: object
-	) {
+	): Promise<{
+		ok: boolean;
+		status: number;
+		body?: object;
+	}> {
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const extras: any = {
 			headers: {}

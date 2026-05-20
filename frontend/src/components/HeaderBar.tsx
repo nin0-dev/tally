@@ -1,6 +1,6 @@
 import { Button, Group, Title } from "@mantine/core";
-import { showRegistrationModal } from "../utils/modals";
 import { useMediaQuery } from "@mantine/hooks";
+import { modals } from "@mantine/modals";
 
 export default function HeaderBar() {
 	const isMobile = useMediaQuery("(max-width: 50em)");
@@ -17,7 +17,16 @@ export default function HeaderBar() {
 			<Button style={{ marginLeft: "auto" }} variant="outline">
 				Login
 			</Button>
-			<Button onClick={() => showRegistrationModal(isMobile)}>
+			<Button
+				onClick={() =>
+					modals.openContextModal({
+						modal: "register",
+						title: "Register",
+						fullScreen: isMobile,
+						innerProps: {}
+					})
+				}
+			>
 				Register
 			</Button>
 		</Group>

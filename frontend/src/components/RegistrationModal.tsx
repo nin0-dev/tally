@@ -1,10 +1,21 @@
-import { Box, Button, Group, Input, TextInput } from "@mantine/core";
+import {
+	Box,
+	Button,
+	Group,
+	Input,
+	LoadingOverlay,
+	TextInput
+} from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { RestAPI } from "../utils/RestAPI";
+import type { ContextModalProps } from "@mantine/modals";
+import { lockModal, unlockModal } from "../utils/modals";
+import Spin from "./Spin";
 
-export default function RegistrationModal() {
+export default function RegistrationModal({ context, id }: ContextModalProps) {
+	const [spin, setSpin] = useState(false);
 	const turnstileRef = useRef<TurnstileInstance | null>(null);
 	const form = useForm({
 		mode: "controlled",
@@ -24,42 +35,55 @@ export default function RegistrationModal() {
 	});
 
 	return (
-		<form
-			onSubmit={form.onSubmit(async vals => {
-				const req = await RestAPI.post("/accounts", vals);
-				console.log(req);
-			})}
-		>
-			<TextInput
-				withAsterisk
-				label="Account name"
-				description="This does not have to be unique"
-				key={form.key("name")}
-				{...form.getInputProps("name")}
-			/>
-			{!!window.CARDY_CLIENT_CONFIG.turnstileKey && (
-				<Input.Wrapper
-					label="CAPTCHA"
+		<Box pos="relative">
+			<Spin show={spin} />
+			<form
+				onSubmit={form.onSubmit(async vals => {
+					lockModal(id, context, setSpin);
+					const req = await RestAPI.post("/accounts", vals);
+                    if (!req.ok) {
+                        
+					}
+				})}
+			>
+				<TextInput
 					withAsterisk
-					error={form.errors.turnstile}
-					mt="sm"
-				>
-					<Box pt={"xs"}>
-						<Turnstile
-							ref={turnstileRef}
-							siteKey={window.CARDY_CLIENT_CONFIG.turnstileKey}
-							onSuccess={token =>
-								form.setFieldValue("turnstile", token)
-							}
-							onExpire={() => form.setFieldValue("turnstile", "")}
-							onError={() => form.setFieldValue("turnstile", "")}
-						/>
-					</Box>
-				</Input.Wrapper>
-			)}
-			<Group justify="flex-end" mt="md">
-				<Button type="submit">Register</Button>
-			</Group>
-		</form>
+					data-autofocus
+					label="Account name"
+					description="This does not have to be unique"
+					key={form.key("name")}
+					{...form.getInputProps("name")}
+				/>
+				{!!window.CARDY_CLIENT_CONFIG.turnstileKey && (
+					<Input.Wrapper
+						label="CAPTCHA"
+						withAsterisk
+						error={form.errors.turnstile}
+						mt="sm"
+					>
+						<Box pt={"xs"}>
+							<Turnstile
+								ref={turnstileRef}
+								siteKey={
+									window.CARDY_CLIENT_CONFIG.turnstileKey
+								}
+								onSuccess={token =>
+									form.setFieldValue("turnstile", token)
+								}
+								onExpire={() =>
+									form.setFieldValue("turnstile", "")
+								}
+								onError={() =>
+									form.setFieldValue("turnstile", "")
+								}
+							/>
+						</Box>
+					</Input.Wrapper>
+				)}
+				<Group justify="flex-end" mt="md">
+					<Button type="submit">Register</Button>
+				</Group>
+			</form>
+		</Box>
 	);
 }

@@ -7,6 +7,7 @@ import { useColorScheme } from "@mantine/hooks";
 import HeaderBar from "./components/HeaderBar";
 import { theme } from "./utils/theme";
 import { ModalsProvider } from "@mantine/modals";
+import RegistrationModal from "./components/RegistrationModal";
 
 export default function App() {
 	const colorScheme = useColorScheme();
@@ -15,7 +16,7 @@ export default function App() {
 	return (
 		<>
 			<MantineProvider forceColorScheme={colorScheme} theme={theme}>
-				<ModalsProvider>
+				<ModalsProvider modals={{ register: RegistrationModal }}>
 					<AppShell padding="lg" header={{ height: 60 }}>
 						<AppShell.Header>
 							<HeaderBar />
