@@ -1,21 +1,20 @@
-import {
-	Box,
-	Button,
-	Group,
-	Input,
-	LoadingOverlay,
-	TextInput
-} from "@mantine/core";
+import { Box, Button, Group, Input, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
 import { useRef, useState } from "react";
 import { RestAPI } from "../utils/RestAPI";
-import { closeModal, type ContextModalProps } from "@mantine/modals";
+import {
+	closeModal,
+	openContextModal,
+	type ContextModalProps
+} from "@mantine/modals";
 import { lockModal, unlockModal } from "../utils/modals";
 import Spin from "./Spin";
 import { showErrorNotification } from "../utils/notify";
+import { useMediaQuery } from "@mantine/hooks";
 
 export default function RegistrationModal({ context, id }: ContextModalProps) {
+	const isMobile = useMediaQuery("(max-width: 50em)");
 	const [spin, setSpin] = useState(false);
 	const turnstileRef = useRef<TurnstileInstance | null>(null);
 	const form = useForm({
@@ -55,6 +54,18 @@ export default function RegistrationModal({ context, id }: ContextModalProps) {
 						});
 					} else {
 						closeModal(id);
+						openContextModal({
+							modal: "confirmRegister",
+							title: "Register",
+							fullScreen: isMobile,
+							withCloseButton: false,
+							closeOnClickOutside: false,
+							closeOnEscape: false,
+							innerProps: {
+								accountID: req.body.accountID,
+								key: req.body.key
+							}
+						});
 					}
 				})}
 			>
@@ -93,6 +104,7 @@ export default function RegistrationModal({ context, id }: ContextModalProps) {
 					</Input.Wrapper>
 				)}
 				<Group justify="flex-end" mt="md">
+					<a onClick={() => {}}>Already have an account? Login</a>
 					<Button type="submit">Register</Button>
 				</Group>
 			</form>

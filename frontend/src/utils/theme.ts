@@ -3,6 +3,9 @@ import { createTheme } from "@mantine/core";
 export const theme = createTheme({
 	defaultRadius: "md",
 	fontFamily: "Instrument Sans, sans-serif",
+	headings: {
+		fontFamily: "Space Grotesk, sans-serif"
+	},
 	fontFamilyMonospace: "Geist Mono, monospace",
 	primaryColor: "pink",
 	colors: {

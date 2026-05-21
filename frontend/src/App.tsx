@@ -8,16 +8,24 @@ import { theme } from "./utils/theme";
 import { ModalsProvider } from "@mantine/modals";
 import RegistrationModal from "./components/RegistrationModal";
 import { Notifications } from "@mantine/notifications";
+import ConfirmedRegModal from "./components/ConfirmedRegModal";
 
 export default function App() {
 	const colorScheme = useColorScheme();
-	const isMain = useRoute("/");
+    const isMain = useRoute("/");
+
+    
 
 	return (
 		<>
 			<MantineProvider forceColorScheme={colorScheme} theme={theme}>
 				<Notifications />
-				<ModalsProvider modals={{ register: RegistrationModal }}>
+				<ModalsProvider
+					modals={{
+						register: RegistrationModal,
+						confirmRegister: ConfirmedRegModal
+					}}
+				>
 					<AppShell padding="lg" header={{ height: 60 }}>
 						<AppShell.Header>
 							<HeaderBar />

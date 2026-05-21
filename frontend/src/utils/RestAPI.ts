@@ -16,9 +16,9 @@ export const RestAPI = {
 		| {
 				ok: true;
 				status: number;
-				body?: object;
+				body?: any;
 		  }
-		| { ok: false; status: number; body?: object; error: string }
+		| { ok: false; status: number; body?: any; error: string }
 	> {
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const extras: any = {
