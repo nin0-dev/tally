@@ -24,3 +24,7 @@ dist-ssr
 *.sw?
 
 public/config.js
+
+.env
+database.db
+config.js

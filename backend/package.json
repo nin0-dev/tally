@@ -11,9 +11,9 @@
 	},
 	"type": "module",
 	"scripts": {
-		"generateSchema": "DATABASE_URL=database.db kysely-codegen",
+		"generateSchema": "DATABASE_URL=../database.db kysely-codegen",
 		"build": "node build.mjs",
-		"start": "node --env-file-if-exists=.env dist/index.cjs"
+		"start": "node --env-file-if-exists=../.env dist/index.cjs"
 	},
 	"devDependencies": {
 		"@types/better-sqlite3": "^7.6.13",

@@ -1,0 +1,8 @@
+packages:
+    - backend
+    - frontend
+
+onlyBuiltDependencies:
+    - argon2
+    - better-sqlite3
+    - esbuild

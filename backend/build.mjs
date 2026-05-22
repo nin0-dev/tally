@@ -14,6 +14,7 @@ await esbuild.build({
 		"tedious",
 		"@tediousjs/connection-string",
 		"better-sqlite3",
-		"argon2"
+		"argon2",
+		"pg"
 	]
 });
