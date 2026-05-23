@@ -113,11 +113,8 @@ export default function MyAccount() {
 						<TextInput
 							data-autofocus
 							label="Secret key"
-							value={
-								revealKey
-									? account.key
-									: "*".repeat(account.key.length)
-							}
+							type={revealKey ? "text" : "password"}
+							value={account.key}
 							readOnly={true}
 						/>
 						<Checkbox
