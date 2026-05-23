@@ -15,6 +15,7 @@ export function setupAccountRoutes() {
 		const user = await db
 			.selectFrom("users")
 			.select(["name", "id", "allow_transfer"])
+			.where("id", "=", u)
 			.executeTakeFirstOrThrow();
 
 		// @ts-ignore
