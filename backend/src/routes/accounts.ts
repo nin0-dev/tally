@@ -42,6 +42,11 @@ export function setupAccountRoutes() {
 		const u = await getUserIDForRequest(req);
 		if (!u) return void res.status(401).send();
 
+		const user = await db
+			.selectFrom("users")
+			.select(["id", "name"])
+			.where("id", "=", u)
+			.executeTakeFirstOrThrow();
 		const decks = await db
 			.selectFrom("decks")
 			.select(["id", "name", "content"])
@@ -53,7 +58,7 @@ export function setupAccountRoutes() {
 			.where("user", "=", u)
 			.execute();
 
-		return { decks, plays };
+		return { user, decks, plays };
 	});
 
 	server.post("/accounts", async (req, res) => {
