@@ -9,6 +9,6 @@ export function validateDeckID(req: FastifyRequest) {
 	return id;
 }
 
-export function generateID(length: 12 | 16) {
+export function generateID(length: 12 | 24) {
 	return randomBytes(length / 2).toString("hex");
 }

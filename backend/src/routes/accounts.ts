@@ -27,7 +27,7 @@ export function setupAccountRoutes() {
 		const u = await getUserIDForRequest(req);
 		if (!u) return void res.status(401).send();
 
-		const key = generateID(16);
+		const key = generateID(24);
 
 		await db
 			.updateTable("users")
@@ -62,7 +62,7 @@ export function setupAccountRoutes() {
 	});
 
 	server.post("/accounts", async (req, res) => {
-		const [accountID, key] = [generateID(12), generateID(16)];
+		const [accountID, key] = [generateID(12), generateID(24)];
 		const { name, turnstile } = TBCUser.parse(req.body);
 
 		if (!(await validateTurnstile(turnstile)))
