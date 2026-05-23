@@ -145,7 +145,10 @@ export default function MyAccount() {
 											);
 											if (req.ok) {
 												setRevealKey(true);
-												account.logIn(id, req.body.key);
+												account.logIn(
+													account.accountID,
+													req.body.key
+												);
 												openConfirmModal({
 													title: "Key rotated",
 													labels: {

@@ -5,6 +5,9 @@ type Endpoint = `/${string}`;
 
 type Extra = {
 	body?: object;
+	headers?: {
+		[name: string]: string;
+	};
 	errors?: {
 		[code: number]: string;
 	};
@@ -27,6 +30,11 @@ export const RestAPI = {
 		const extras: any = {
 			headers: {}
 		};
+		if (extra.headers) {
+			for (const [h, v] of Object.entries(extra.headers)) {
+				extras.headers[h] = v;
+			}
+		}
 		const account = useAccount.getState();
 		if (account.key) {
 			extras.headers["Authorization"] =
@@ -59,6 +67,7 @@ export const RestAPI = {
 				navigate("/");
 			}
 			extra.errors[500] = "Validation / internal error";
+			extra.errors[401] = "Authentication error";
 			bodyContainer.error =
 				extra.errors[request.status] ??
 				`Unknown error ${request.status}`;

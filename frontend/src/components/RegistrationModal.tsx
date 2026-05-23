@@ -103,7 +103,18 @@ export default function RegistrationModal({ context, id }: ContextModalProps) {
 					</Input.Wrapper>
 				)}
 				<Group justify="flex-end" mt="md">
-					<a onClick={() => {}}>Already have an account? Login</a>
+					<a
+						onClick={() => {
+							closeModal(id);
+							openContextModal({
+								modal: "login",
+								title: "Login",
+								innerProps: {}
+							});
+						}}
+					>
+						Already have an account? Login
+					</a>
 					<Button type="submit">Register</Button>
 				</Group>
 			</form>

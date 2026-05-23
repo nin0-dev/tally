@@ -10,6 +10,7 @@ import RegistrationModal from "./components/RegistrationModal";
 import { Notifications } from "@mantine/notifications";
 import ConfirmedRegModal from "./components/ConfirmedRegModal";
 import MyAccount from "./pages/MyAccount";
+import LoginModal from "./components/LoginModal";
 
 export default function App() {
 	const colorScheme = useColorScheme();
@@ -22,7 +23,8 @@ export default function App() {
 				<ModalsProvider
 					modals={{
 						register: RegistrationModal,
-						confirmRegister: ConfirmedRegModal
+						confirmRegister: ConfirmedRegModal,
+						login: LoginModal
 					}}
 				>
 					<AppShell padding="lg" header={{ height: 60 }}>

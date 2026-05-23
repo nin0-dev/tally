@@ -1,9 +1,7 @@
 import { Button, Group, Title } from "@mantine/core";
-import { useMediaQuery } from "@mantine/hooks";
-import { modals } from "@mantine/modals";
+import { openContextModal } from "@mantine/modals";
 import { useAccount } from "../stores/account";
 import { Link } from "wouter";
-import { useMobile } from "../utils/useMobile";
 
 export default function HeaderBar() {
 	const account = useAccount();
@@ -19,12 +17,22 @@ export default function HeaderBar() {
 
 			{!account.key ? (
 				<>
-					<Button style={{ marginLeft: "auto" }} variant="outline">
+					<Button
+						style={{ marginLeft: "auto" }}
+						variant="outline"
+						onClick={() => {
+							openContextModal({
+								modal: "login",
+								title: "Login",
+								innerProps: {}
+							});
+						}}
+					>
 						Login
 					</Button>
 					<Button
 						onClick={() =>
-							modals.openContextModal({
+							openContextModal({
 								modal: "register",
 								title: "Register",
 								innerProps: {}
