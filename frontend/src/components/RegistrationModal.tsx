@@ -12,9 +12,9 @@ import { lockModal, unlockModal } from "../utils/modals";
 import Spin from "./Spin";
 import { showErrorNotification } from "../utils/notify";
 import { useMediaQuery } from "@mantine/hooks";
+import { useMobile } from "../utils/useMobile";
 
 export default function RegistrationModal({ context, id }: ContextModalProps) {
-	const isMobile = useMediaQuery("(max-width: 50em)");
 	const [spin, setSpin] = useState(false);
 	const turnstileRef = useRef<TurnstileInstance | null>(null);
 	const form = useForm({
@@ -57,7 +57,6 @@ export default function RegistrationModal({ context, id }: ContextModalProps) {
 						openContextModal({
 							modal: "confirmRegister",
 							title: "Register",
-							fullScreen: isMobile,
 							withCloseButton: false,
 							closeOnClickOutside: false,
 							closeOnEscape: false,

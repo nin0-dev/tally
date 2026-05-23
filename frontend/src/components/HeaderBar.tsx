@@ -2,10 +2,10 @@ import { Button, Group, Title } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { modals } from "@mantine/modals";
 import { useAccount } from "../stores/account";
-import { PlusIcon } from "@phosphor-icons/react/dist/ssr";
+import { Link } from "wouter";
+import { useMobile } from "../utils/useMobile";
 
 export default function HeaderBar() {
-	const isMobile = useMediaQuery("(max-width: 50em)");
 	const account = useAccount();
 
 	return (
@@ -27,7 +27,6 @@ export default function HeaderBar() {
 							modals.openContextModal({
 								modal: "register",
 								title: "Register",
-								fullScreen: isMobile,
 								innerProps: {}
 							})
 						}
@@ -36,7 +35,9 @@ export default function HeaderBar() {
 					</Button>
 				</>
 			) : (
-				<Button>My account</Button>
+				<Link href="/account" style={{ marginLeft: "auto" }}>
+					<Button>My account</Button>
+				</Link>
 			)}
 		</Group>
 	);

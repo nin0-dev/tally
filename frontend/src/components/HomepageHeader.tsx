@@ -1,10 +1,9 @@
 import { Button, Flex, Text } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { modals } from "@mantine/modals";
+import { useMobile } from "../utils/useMobile";
 
 export default function HomepageHeader() {
-	const isMobile = useMediaQuery("(max-width: 50em)");
-
 	return (
 		<Flex
 			direction="column"
@@ -33,7 +32,6 @@ export default function HomepageHeader() {
 					modals.openContextModal({
 						modal: "register",
 						title: "Register",
-						fullScreen: isMobile,
 						innerProps: {}
 					})
 				}

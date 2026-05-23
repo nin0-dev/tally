@@ -31,7 +31,7 @@ export const useAccount = create<{
 			name: "account",
 			partialize: state => ({
 				accountID: state.accountID,
-				key: state.accountID
+				key: state.key
 			})
 		}
 	)

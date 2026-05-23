@@ -9,12 +9,11 @@ import { ModalsProvider } from "@mantine/modals";
 import RegistrationModal from "./components/RegistrationModal";
 import { Notifications } from "@mantine/notifications";
 import ConfirmedRegModal from "./components/ConfirmedRegModal";
+import MyAccount from "./pages/MyAccount";
 
 export default function App() {
 	const colorScheme = useColorScheme();
-    const isMain = useRoute("/");
-
-    
+	const [isMain] = useRoute("/");
 
 	return (
 		<>
@@ -44,6 +43,10 @@ export default function App() {
 							<Container size={"xl"}>
 								<Switch>
 									<Route path="/" component={Home} />
+									<Route
+										path="/account"
+										component={MyAccount}
+									/>
 								</Switch>
 							</Container>
 						</AppShell.Main>
