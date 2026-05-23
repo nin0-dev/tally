@@ -1,3 +1,4 @@
+import { navigate } from "wouter/use-browser-location";
 import { useAccount } from "../stores/account";
 
 type Endpoint = `/${string}`;
@@ -55,7 +56,7 @@ export const RestAPI = {
 		if (!ok) {
 			if (request.status === 401 && account.accountID) {
 				account.logOut();
-				window.location.href = "/";
+				navigate("/");
 			}
 			extra.errors[500] = "Validation / internal error";
 			bodyContainer.error =

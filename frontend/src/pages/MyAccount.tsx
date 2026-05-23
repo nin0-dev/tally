@@ -18,11 +18,12 @@ import {
 } from "../utils/notify";
 import { useAccount } from "../stores/account";
 import { openConfirmModal } from "@mantine/modals";
-import { useMobile } from "../utils/useMobile";
 import { WarningIcon } from "@phosphor-icons/react";
+import { useLocation } from "wouter";
 
 export default function MyAccount() {
 	const [name, setName] = useState<string | undefined>(undefined);
+	const [, setLocation] = useLocation();
 	const account = useAccount();
 	const [id, setId] = useState<string | undefined>(undefined);
 	const [revealKey, setRevealKey] = useState(false);
@@ -257,19 +258,8 @@ export default function MyAccount() {
 								onClick={() => {
 									openConfirmModal({
 										title: "Log out",
-										children: (
-											<>
-												<Text>
-													Make sure that you have
-													saved your account
-													credentials (account ID,
-													secret key) before logging
-													out. If you do not have
-													these, you have no way of
-													logging back in!
-												</Text>
-											</>
-										),
+										children:
+											"Make sure that you have saved your account credentials (account ID, secret key) before logging out. If you do not have these, you have no way of logging back in!",
 										labels: {
 											confirm: "Log out",
 											cancel: "Cancel"
@@ -279,14 +269,74 @@ export default function MyAccount() {
 										},
 										onConfirm() {
 											account.logOut();
-											window.location.href = "/";
+											setLocation("/");
+											showSuccessNotification({
+												title: "Logged out",
+												message:
+													"You have been logged out of your account."
+											});
 										}
 									});
 								}}
 							>
 								Log out
 							</Button>
-							<Button color="red">Delete account</Button>
+							<Button
+								color="red"
+								onClick={() => {
+									openConfirmModal({
+										title: "Delete account",
+										children:
+											"This will permanently delete your Cardy account, along with any decks that you own, and your play history on all decks. This process cannot be reversed. Do you want to continue?",
+										labels: {
+											confirm: "Yes, delete my account",
+											cancel: "No, keep it"
+										},
+										confirmProps: {
+											color: "red"
+										},
+										onConfirm() {
+											openConfirmModal({
+												title: "Delete account",
+												children:
+													"This is your last chance to cancel. Are you sure?",
+												labels: {
+													confirm: "Yes, I'm sure!",
+													cancel: "Cancel"
+												},
+												confirmProps: {
+													color: "red"
+												},
+												async onConfirm() {
+													const req =
+														await RestAPI.delete(
+															"/accounts",
+															{}
+														);
+													if (req.ok) {
+														account.logOut();
+														setLocation("/");
+														showSuccessNotification(
+															{
+																title: "Success",
+																message:
+																	"Your Cardy account has been deleted."
+															}
+														);
+													} else {
+														showErrorNotification({
+															title: "Couldn't delete account",
+															message: req.error
+														});
+													}
+												}
+											});
+										}
+									});
+								}}
+							>
+								Delete account
+							</Button>
 						</Flex>
 					</>
 				) : (
