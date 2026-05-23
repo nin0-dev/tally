@@ -3,7 +3,7 @@ import SQLite from "better-sqlite3";
 import { type DB } from "kysely-codegen";
 
 const dialect = new SqliteDialect({
-	database: new SQLite("database.db")
+	database: new SQLite(process.env.DATABASE_URL)
 });
 
 export const db = new Kysely<DB>({

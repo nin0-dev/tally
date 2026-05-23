@@ -101,7 +101,10 @@ export function setupAccountRoutes() {
 			name?: string;
 			allow_transfer?: number;
 		} = {};
-		if (name) pendingUpdates.name = name;
+		if (name !== undefined) {
+			if (!name?.trim().length) return void res.status(400).send();
+			pendingUpdates.name = name.trim();
+		}
 		if (allow_transfer !== undefined)
 			pendingUpdates.allow_transfer = Number(allow_transfer);
 

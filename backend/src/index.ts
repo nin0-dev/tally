@@ -20,5 +20,6 @@ setupDeckRoutes();
 setupPlayRoutes();
 
 server.listen({
-	port: parseInt(process.env.PORT ?? "6969")
+	host: process.env.HOST || "127.0.0.1",
+	port: parseInt(process.env.PORT ?? "9635")
 });

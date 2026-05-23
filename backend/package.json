@@ -11,7 +11,7 @@
 	},
 	"type": "module",
 	"scripts": {
-		"generateSchema": "DATABASE_URL=../database.db kysely-codegen",
+		"generateSchema": "kysely-codegen",
 		"build": "node build.mjs",
 		"start": "node --env-file-if-exists=../.env dist/index.cjs"
 	},
