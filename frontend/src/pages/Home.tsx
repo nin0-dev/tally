@@ -95,7 +95,7 @@ export default function Home() {
 				absolutely no personal information is collected.
 				<br />
 				Cardy is also{" "}
-				<Link href="https://git.nin0.dev/nin0/cardy">open-source</Link>.
+				<a href="https://git.nin0.dev/nin0/cardy">open-source</a>.
 			</Text>
 		</Box>
 	);

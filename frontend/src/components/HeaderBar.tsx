@@ -1,10 +1,11 @@
 import { Button, Group, Title } from "@mantine/core";
 import { openContextModal } from "@mantine/modals";
 import { useAccount } from "../stores/account";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 
 export default function HeaderBar() {
 	const account = useAccount();
+	const [, setLocation] = useLocation();
 
 	return (
 		<Group
@@ -13,7 +14,15 @@ export default function HeaderBar() {
 				margin: "0 20px"
 			}}
 		>
-			<Title order={2}>Cardy</Title>
+			<Title
+				order={2}
+				style={{
+					cursor: "pointer"
+				}}
+				onClick={() => setLocation("/")}
+			>
+				Cardy
+			</Title>
 
 			{!account.key ? (
 				<>
