@@ -20,6 +20,7 @@ import { useAccount } from "../stores/account";
 import { openConfirmModal } from "@mantine/modals";
 import { WarningIcon } from "@phosphor-icons/react";
 import { useLocation } from "wouter";
+import { download } from "../utils/download";
 
 export default function MyAccount() {
 	const [name, setName] = useState<string | undefined>(undefined);
@@ -229,24 +230,15 @@ export default function MyAccount() {
 											message: req.error
 										});
 									} else {
-										const url = URL.createObjectURL(
-											new Blob(
-												[
-													JSON.stringify(
-														req.body,
-														null,
-														"\t"
-													)
-												],
-												{ type: "application/json" }
-											)
-										);
-										const link =
-											document.createElement("a");
-										link.href = url;
-										link.download = `tally-data-export-${id}-${Math.floor(Date.now() / 1000)}.json`;
-										link.click();
-										URL.revokeObjectURL(url);
+										download({
+											content: JSON.stringify(
+												req.body,
+												null,
+												2
+											),
+											name: `tally-data-export-${id}-${Math.floor(Date.now() / 1000)}.json`,
+											type: "application/json"
+										});
 									}
 								}}
 							>

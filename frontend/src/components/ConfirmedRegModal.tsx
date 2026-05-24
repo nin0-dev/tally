@@ -13,6 +13,7 @@ import { closeModal, type ContextModalProps } from "@mantine/modals";
 import { WarningIcon } from "@phosphor-icons/react";
 import { useState } from "react";
 import { useAccount } from "../stores/account";
+import { download } from "../utils/download";
 
 export default function ConfirmedRegModal({
 	context,
@@ -42,23 +43,42 @@ export default function ConfirmedRegModal({
 			>
 				Accounts are fully anonymous. There is no account recovery
 				process. If you lose these credentials, you lose access to your
-				decks. It is suggested that you save them in a password manager,
-				or similar.
-				<Checkbox
-					label={`I understand, let me continue${hasBeenRevealedOnce ? "" : " (reveal & save your secret key to continue)"}`}
-					mt="xs"
-					onChange={t => setHasAcknowledged(t.currentTarget.checked)}
-					disabled={!hasBeenRevealedOnce}
-				/>
+				decks.
+				<br />
+				{!hasAcknowledged && (
+					<>
+						<Text fw="bold">
+							You must download your login information to
+							continue.
+						</Text>
+					</>
+				)}
+				<Button
+					mt="sm"
+					color="orange"
+					variant="outline"
+					onClick={() => {
+						setHasAcknowledged(true);
+						download({
+							name: `tally-login-${accountID}.txt`,
+							content: `Account ID: ${accountID}\nSecret key: ${key}\n\nDo not lose this, or you will lose access to your account!`,
+							type: "text/plain"
+						});
+					}}
+				>
+					Download login info
+				</Button>
 			</Alert>
 			<Card>
 				<Text fw={500}>Account ID</Text>
-				<Text ff={"monospace"}>{accountID}</Text>
+				<Text ff={"monospace"} style={{ wordBreak: "break-all" }}>
+					{accountID}
+				</Text>
 			</Card>
 			<Card>
 				<Text fw={500}>Secret key</Text>
-				<Text ff={"monospace"}>
-					{showKey ? key : "*".repeat(key.length)}
+				<Text ff={"monospace"} style={{ wordBreak: "break-all" }}>
+					{showKey ? key : "⦿".repeat(key.length)}
 				</Text>
 				<Checkbox
 					label="Reveal"
