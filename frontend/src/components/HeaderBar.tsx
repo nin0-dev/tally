@@ -53,7 +53,7 @@ export default function HeaderBar() {
 				</>
 			) : (
 				<Link href="/account" style={{ marginLeft: "auto" }}>
-					<Button>My account</Button>
+					<Button variant="outline">My account</Button>
 				</Link>
 			)}
 		</Group>
