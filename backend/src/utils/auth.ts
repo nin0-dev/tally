@@ -5,7 +5,7 @@ import { verify } from "argon2";
 export async function getUserIDForRequest(req: FastifyRequest) {
 	if (!req.headers.authorization) return;
 	const match = req.headers.authorization.match(
-		/^([0-9a-f]{12})-([0-9a-f]{24})$/
+		/^([0-9a-f]{12})-([0-9a-f]{32})$/
 	);
 	if (!match || !match[1] || !match[2]) return;
 	const [, userID, key] = match;
