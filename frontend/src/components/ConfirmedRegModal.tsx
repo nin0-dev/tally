@@ -29,10 +29,10 @@ export default function ConfirmedRegModal({
 	return (
 		<Flex gap={"md"} direction={"column"}>
 			<Text>
-				Your Cardy account is now created, and you can now create
+				Your Tally account is now created, and you can now create
 				flashcard decks! However, before getting started, take note of
 				the following credentials. You can use them to login to your
-				Cardy account.
+				Tally account.
 			</Text>
 			<Alert
 				variant="light"

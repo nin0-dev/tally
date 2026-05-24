@@ -11,10 +11,13 @@ import { Notifications } from "@mantine/notifications";
 import ConfirmedRegModal from "./components/ConfirmedRegModal";
 import MyAccount from "./pages/MyAccount";
 import LoginModal from "./components/LoginModal";
+import { useAccount } from "./stores/account";
+import Dashboard from "./pages/Dashboard";
 
 export default function App() {
 	const colorScheme = useColorScheme();
 	const [isMain] = useRoute("/");
+	const account = useAccount();
 
 	return (
 		<>
@@ -33,7 +36,7 @@ export default function App() {
 						</AppShell.Header>
 						<AppShell.Main
 							style={
-								isMain
+								isMain && !account.key
 									? {
 											display: "flex",
 											alignItems: "center",
@@ -44,7 +47,12 @@ export default function App() {
 						>
 							<Container size={"xl"}>
 								<Switch>
-									<Route path="/" component={Home} />
+									<Route
+										path="/"
+										component={
+											!account.key ? Home : Dashboard
+										}
+									/>
 									<Route
 										path="/account"
 										component={MyAccount}

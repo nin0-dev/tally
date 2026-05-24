@@ -1,5 +1,5 @@
 {
-    "name": "cardy",
+    "name": "tally",
     "private": true,
     "scripts": {
         "dev-b": "pnpm --filter ./backend build && pnpm --filter ./backend start",

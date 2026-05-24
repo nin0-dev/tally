@@ -47,27 +47,27 @@ export default function Home() {
 			<HomepageHeader />
 			<Divider />
 			<Title order={2} style={{ margin: "var(--mantine-spacing-xl) 0" }}>
-				Why use Cardy?
+				Why use Tally?
 			</Title>
 			<Grid>
 				<Grid.Col span={{ base: 12, md: 6 }}>
 					<SellingPoint
 						main="Learns from you"
-						desc="Every time you study your deck, Cardy learns your pain points and your successes and adapts your future study sessions to review what you need to study."
+						desc="Every time you study your deck, Tally learns your pain points and your successes and adapts your future study sessions to review what you need to study."
 						subtext="This is a flashcard. Click it to see more details!"
 					/>
 				</Grid.Col>
 				<Grid.Col span={{ base: 12, md: 6 }}>
 					<SellingPoint
 						main="Cross-platform"
-						desc="Cardy works on all your favourite devices: computer, phone, Android or iOS!"
+						desc="Tally works on all your favourite devices: computer, phone, Android or iOS!"
 						subtext="This is also a flashcard."
 					/>
 				</Grid.Col>
 				<Grid.Col span={{ base: 12, md: 6 }}>
 					<SellingPoint
 						main="Private by design"
-						desc="Cardy is private by design: you do not need to hand over your email or any personal information to use it. Instead, you use a generated key to login and sync your decks across devices."
+						desc="Tally is private by design: you do not need to hand over your email or any personal information to use it. Instead, you use a generated key to login and sync your decks across devices."
 						subtext=""
 					/>
 				</Grid.Col>
@@ -87,7 +87,7 @@ export default function Home() {
 				}}
 			>
 				Not enough? Signing up is a quick process and will allow you to
-				make a flashcard deck to see Cardy in action, and determine if
+				make a flashcard deck to see Tally in action, and determine if
 				this is the right tool for you.
 				<br />
 				<br />
@@ -95,7 +95,7 @@ export default function Home() {
 				absolutely no personal information is collected.
 				<br />
 				Cardy is also{" "}
-				<a href="https://git.nin0.dev/nin0/cardy">open-source</a>.
+				<a href="https://git.nin0.dev/nin0/tally">open-source</a>.
 			</Text>
 		</Box>
 	);

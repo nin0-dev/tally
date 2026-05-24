@@ -26,7 +26,7 @@ export default function RegistrationModal({ context, id }: ContextModalProps) {
 		validate: {
 			name: v => (v.length > 0 ? null : "Name is required"),
 			turnstile: v =>
-				window.CARDY_CLIENT_CONFIG.turnstileKey
+				window.TALLY_CLIENT_CONFIG.turnstileKey
 					? v.length > 0
 						? null
 						: "Make sure that you passed the CAPTCHA"
@@ -76,7 +76,7 @@ export default function RegistrationModal({ context, id }: ContextModalProps) {
 					key={form.key("name")}
 					{...form.getInputProps("name")}
 				/>
-				{!!window.CARDY_CLIENT_CONFIG.turnstileKey && (
+				{!!window.TALLY_CLIENT_CONFIG.turnstileKey && (
 					<Input.Wrapper
 						label="CAPTCHA"
 						withAsterisk
@@ -87,7 +87,7 @@ export default function RegistrationModal({ context, id }: ContextModalProps) {
 							<Turnstile
 								ref={turnstileRef}
 								siteKey={
-									window.CARDY_CLIENT_CONFIG.turnstileKey
+									window.TALLY_CLIENT_CONFIG.turnstileKey
 								}
 								onSuccess={token =>
 									form.setFieldValue("turnstile", token)

@@ -50,7 +50,7 @@ export default function MyAccount() {
 	}, []);
 
 	return (
-		<Box style={{ height: "100%" }}>
+		<Box>
 			<Title order={1}>My account</Title>
 			<Flex
 				direction="column"
@@ -79,7 +79,7 @@ export default function MyAccount() {
 								setAllowTransfer(e.currentTarget.checked)
 							}
 							label="Allow deck transfer"
-							description="If you enable this, Cardy will allow one deck to be transferred to your account. This option is automatically disabled after a successful transfer."
+							description="If you enable this, Tally will allow one deck to be transferred to your account. This option is automatically disabled after a successful transfer."
 						/>
 						<Box>
 							<Button
@@ -244,7 +244,7 @@ export default function MyAccount() {
 										const link =
 											document.createElement("a");
 										link.href = url;
-										link.download = `cardy-data-export-${id}-${Math.floor(Date.now() / 1000)}.json`;
+										link.download = `tally-data-export-${id}-${Math.floor(Date.now() / 1000)}.json`;
 										link.click();
 										URL.revokeObjectURL(url);
 									}
@@ -287,7 +287,7 @@ export default function MyAccount() {
 									openConfirmModal({
 										title: "Delete account",
 										children:
-											"This will permanently delete your Cardy account, along with any decks that you own, and your play history on all decks. This process cannot be reversed. Do you want to continue?",
+											"This will permanently delete your Tally account, along with any decks that you own, and your play history on all decks. This process cannot be reversed. Do you want to continue?",
 										labels: {
 											confirm: "Yes, delete my account",
 											cancel: "No, keep it"
@@ -320,7 +320,7 @@ export default function MyAccount() {
 															{
 																title: "Success",
 																message:
-																	"Your Cardy account has been deleted."
+																	"Your Tally account has been deleted."
 															}
 														);
 													} else {

@@ -21,7 +21,7 @@ export default function HeaderBar() {
 				}}
 				onClick={() => setLocation("/")}
 			>
-				Cardy
+				Tally
 			</Title>
 
 			{!account.key ? (

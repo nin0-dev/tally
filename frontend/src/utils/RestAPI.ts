@@ -45,7 +45,7 @@ export const RestAPI = {
 			extras.body = JSON.stringify(extra.body);
 		}
 		const request = await fetch(
-			`${window.CARDY_CLIENT_CONFIG.apiBaseURL}${endpoint}`,
+			`${window.TALLY_CLIENT_CONFIG.apiBaseURL}${endpoint}`,
 			{
 				method,
 				...extras
