@@ -9,6 +9,19 @@ export const server = Fastify({
 	loggerInstance: new Yapper()
 });
 
+server.addHook("onSend", async (req, res, payload) => {
+	if (res.statusCode === 401) {
+		await new Promise(resolve =>
+			setTimeout(
+				resolve,
+				Math.floor(Math.random() * (5000 - 3000 + 1)) + 3000
+			)
+		);
+	}
+
+	return payload;
+});
+
 server.register(cors, {
 	origin: [(process.env.ALLOWED_CLIENT_ORIGINS ?? "").trim().split(",")],
 	methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],

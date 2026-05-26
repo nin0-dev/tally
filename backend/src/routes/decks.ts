@@ -54,7 +54,7 @@ export function setupDeckRoutes() {
 					)
 				);
 		} catch {
-			return void res.code(404).send();
+			return res.code(404).send();
 		}
 
 		const u = await getUserIDForRequest(req);
@@ -82,11 +82,11 @@ export function setupDeckRoutes() {
 	});
 
 	server.get("/deck/:id", async (req, res) => {
-		if (!(req.params as any).id) return void res.status(400).send();
+		if (!(req.params as any).id) return res.status(400).send();
 		const { id }: { id: string } = req.params as any;
 		if (id === "@me") {
 			const u = await getUserIDForRequest(req);
-			if (!u) return void res.status(401).send();
+			if (!u) return res.status(401).send();
 
 			const ownedDecks = await db
 				.selectFrom("decks")
@@ -119,7 +119,7 @@ export function setupDeckRoutes() {
 					.where("decks.id", "=", id)
 					.executeTakeFirstOrThrow();
 			} catch {
-				return void res.code(404).send();
+				return res.code(404).send();
 			}
 
 			return {
@@ -136,7 +136,7 @@ export function setupDeckRoutes() {
 
 	server.post("/deck", async (req, res) => {
 		const u = await getUserIDForRequest(req);
-		if (!u) return void res.status(401).send();
+		if (!u) return res.status(401).send();
 
 		const data = TBCDeck.parse(req.body);
 		const id = generateID(12);
@@ -155,7 +155,7 @@ export function setupDeckRoutes() {
 
 	server.put("/deck/:id", async (req, res) => {
 		const u = await getUserIDForRequest(req);
-		if (!u) return void res.status(401).send();
+		if (!u) return res.status(401).send();
 		const { name, owner, questions } = z
 			.object({
 				name: z.string().optional(),
@@ -172,9 +172,9 @@ export function setupDeckRoutes() {
 				.where("id", "=", id)
 				.executeTakeFirstOrThrow();
 		} catch {
-			return void res.status(404).send();
+			return res.status(404).send();
 		}
-		if (deck.owner !== u) return void res.status(404).send();
+		if (deck.owner !== u) return res.status(404).send();
 
 		const pendingUpdates: {
 			name?: string;
@@ -188,9 +188,9 @@ export function setupDeckRoutes() {
 				.select("allow_transfer")
 				.where("id", "=", owner)
 				.executeTakeFirst();
-			if (!resp) return void res.code(404).send();
+			if (!resp) return res.code(404).send();
 			const { allow_transfer } = resp;
-			if (allow_transfer !== 1) return void res.code(403).send();
+			if (allow_transfer !== 1) return res.code(403).send();
 			await db
 				.updateTable("users")
 				.set({
@@ -237,7 +237,7 @@ export function setupDeckRoutes() {
 
 	server.delete("/deck/:id", async (req, res) => {
 		const u = await getUserIDForRequest(req);
-		if (!u) return void res.status(401).send();
+		if (!u) return res.status(401).send();
 		const id = validateDeckID(req);
 
 		try {
@@ -247,9 +247,9 @@ export function setupDeckRoutes() {
 				.where("id", "=", id)
 				.executeTakeFirstOrThrow();
 		} catch {
-			return void res.status(404).send();
+			return res.status(404).send();
 		}
-		if (deck.owner !== u) return void res.status(404).send();
+		if (deck.owner !== u) return res.status(404).send();
 
 		await db.deleteFrom("decks").where("id", "=", id).execute();
 		res.status(204).send();

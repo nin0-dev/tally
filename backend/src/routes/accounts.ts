@@ -10,7 +10,7 @@ import { validateTurnstile } from "../utils/turnstile.js";
 export function setupAccountRoutes() {
 	server.get("/accounts", async (req, res) => {
 		const u = await getUserIDForRequest(req);
-		if (!u) return void res.status(401).send();
+		if (!u) return res.status(401).send();
 
 		const user = await db
 			.selectFrom("users")
@@ -26,7 +26,7 @@ export function setupAccountRoutes() {
 
 	server.post("/accounts/rotate", async (req, res) => {
 		const u = await getUserIDForRequest(req);
-		if (!u) return void res.status(401).send();
+		if (!u) return res.status(401).send();
 
 		const key = generateID(32);
 
@@ -41,7 +41,7 @@ export function setupAccountRoutes() {
 
 	server.get("/accounts/export", async (req, res) => {
 		const u = await getUserIDForRequest(req);
-		if (!u) return void res.status(401).send();
+		if (!u) return res.status(401).send();
 
 		const user = await db
 			.selectFrom("users")
@@ -66,8 +66,7 @@ export function setupAccountRoutes() {
 		const [accountID, key] = [generateID(12), generateID(32)];
 		const { name, turnstile } = TBCUser.parse(req.body);
 
-		if (!(await validateTurnstile(turnstile)))
-			return void res.code(403).send();
+		if (!(await validateTurnstile(turnstile))) return res.code(403).send();
 
 		await db
 			.insertInto("users")
@@ -83,7 +82,7 @@ export function setupAccountRoutes() {
 
 	server.delete("/accounts", async (req, res) => {
 		const u = await getUserIDForRequest(req);
-		if (!u) return void res.status(401).send();
+		if (!u) return res.status(401).send();
 
 		await db.deleteFrom("users").where("id", "=", u).execute();
 		await db.deleteFrom("decks").where("owner", "=", u).execute();
@@ -94,7 +93,7 @@ export function setupAccountRoutes() {
 
 	server.put("/accounts", async (req, res) => {
 		const u = await getUserIDForRequest(req);
-		if (!u) return void res.status(401).send();
+		if (!u) return res.status(401).send();
 
 		const { name, allow_transfer } = z
 			.object({
@@ -108,7 +107,7 @@ export function setupAccountRoutes() {
 			allow_transfer?: number;
 		} = {};
 		if (name !== undefined) {
-			if (!name?.trim().length) return void res.status(400).send();
+			if (!name?.trim().length) return res.status(400).send();
 			pendingUpdates.name = name.trim();
 		}
 		if (allow_transfer !== undefined)

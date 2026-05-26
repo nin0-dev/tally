@@ -8,7 +8,7 @@ import { stat } from "fs/promises";
 export function setupPlayRoutes() {
 	server.get("/plays/:id", async (req, res) => {
 		const u = await getUserIDForRequest(req);
-		if (!u) return void res.code(401).send();
+		if (!u) return res.code(401).send();
 		const id = validateDeckID(req);
 
 		try {
@@ -30,7 +30,7 @@ export function setupPlayRoutes() {
 
 	server.post("/plays/:id", async (req, res) => {
 		const u = await getUserIDForRequest(req);
-		if (!u) return void res.code(401).send();
+		if (!u) return res.code(401).send();
 		const id = validateDeckID(req);
 
 		const body = z
@@ -84,7 +84,7 @@ export function setupPlayRoutes() {
 
 	server.delete("/plays/:id", async (req, res) => {
 		const u = await getUserIDForRequest(req);
-		if (!u) return void res.code(401).send();
+		if (!u) return res.code(401).send();
 		const id = validateDeckID(req);
 
 		await db
