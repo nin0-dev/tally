@@ -94,7 +94,9 @@ export function setupDeckRoutes() {
 				.where("owner", "=", u)
 				.execute();
 
-			return ownedDecks;
+			return {
+				ownedDecks
+			};
 		} else {
 			let deck: {
 				owner: string;
