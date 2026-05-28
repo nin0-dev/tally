@@ -26,7 +26,7 @@ export const RestAPI = {
 		endpoint: Endpoint,
 		extra: Extra
 	): RT {
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		 
 		const extras: any = {
 			headers: {}
 		};
@@ -52,7 +52,7 @@ export const RestAPI = {
 			}
 		);
 
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		 
 		const bodyContainer: any = {};
 		try {
 			bodyContainer.body = await request.json();

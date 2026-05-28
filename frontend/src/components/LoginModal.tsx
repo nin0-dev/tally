@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Group, TextInput } from "@mantine/core";
+import { Anchor, Box, Button, Flex, Group, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import {
 	closeModal,
@@ -78,7 +78,9 @@ export default function LoginModal({ context, id }: ContextModalProps) {
 						{...form.getInputProps("secretKey")}
 					/>
 					<Group justify="flex-end" mt="md">
-						<a
+						<Anchor
+							component="button"
+							type="button"
 							onClick={() => {
 								closeModal(id);
 								openContextModal({
@@ -89,7 +91,7 @@ export default function LoginModal({ context, id }: ContextModalProps) {
 							}}
 						>
 							Don't have an account? Register
-						</a>
+						</Anchor>
 						<Button type="submit">Login</Button>
 					</Group>
 				</Flex>

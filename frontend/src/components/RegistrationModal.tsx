@@ -1,4 +1,4 @@
-import { Box, Button, Group, Input, TextInput } from "@mantine/core";
+import { Anchor, Box, Button, Group, Input, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
 import { useRef, useState } from "react";
@@ -11,8 +11,6 @@ import {
 import { lockModal, unlockModal } from "../utils/modals";
 import Spin from "./Spin";
 import { showErrorNotification } from "../utils/notify";
-import { useMediaQuery } from "@mantine/hooks";
-import { useMobile } from "../utils/useMobile";
 
 export default function RegistrationModal({ context, id }: ContextModalProps) {
 	const [spin, setSpin] = useState(false);
@@ -103,7 +101,9 @@ export default function RegistrationModal({ context, id }: ContextModalProps) {
 					</Input.Wrapper>
 				)}
 				<Group justify="flex-end" mt="md">
-					<a
+					<Anchor
+						component="button"
+						type="button"
 						onClick={() => {
 							closeModal(id);
 							openContextModal({
@@ -114,7 +114,7 @@ export default function RegistrationModal({ context, id }: ContextModalProps) {
 						}}
 					>
 						Already have an account? Login
-					</a>
+					</Anchor>
 					<Button type="submit">Register</Button>
 				</Group>
 			</form>

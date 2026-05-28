@@ -94,7 +94,7 @@ export default function Home() {
 				Accounts are only used to sync your decks across devices,
 				absolutely no personal information is collected.
 				<br />
-				Cardy is also{" "}
+				Tally is also{" "}
 				<a href="https://git.nin0.dev/nin0/tally">open-source</a>.
 			</Text>
 		</Box>
