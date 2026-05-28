@@ -13,6 +13,7 @@ import MyAccount from "./pages/MyAccount";
 import LoginModal from "./components/LoginModal";
 import { useAccount } from "./stores/account";
 import Dashboard from "./pages/Dashboard";
+import CreateDeckModal from "./components/CreateDeckModal";
 
 export default function App() {
 	const colorScheme = useColorScheme();
@@ -27,7 +28,8 @@ export default function App() {
 					modals={{
 						register: RegistrationModal,
 						confirmRegister: ConfirmedRegModal,
-						login: LoginModal
+						login: LoginModal,
+						createDeck: CreateDeckModal
 					}}
 				>
 					<AppShell padding="lg" header={{ height: 60 }}>

@@ -1,8 +1,19 @@
-import { Box, Button, Flex, Grid, Loader, Text, Title } from "@mantine/core";
+import {
+	Box,
+	Button,
+	Card,
+	Flex,
+	Grid,
+	GridCol,
+	Loader,
+	Text,
+	Title
+} from "@mantine/core";
 import { useEffect, useState } from "react";
 import { RestAPI } from "../utils/RestAPI";
 import { type HomeDeck } from "../utils/types";
 import { showErrorNotification } from "../utils/notify";
+import { openContextModal } from "@mantine/modals";
 
 export default function Dashboard() {
 	const [decks, setDecks] = useState<HomeDeck[]>([]);
@@ -29,11 +40,38 @@ export default function Dashboard() {
 	}, []);
 	return (
 		<Box>
-			<Title order={1}>My decks</Title>
+			<Flex direction="row" align="center" gap="md">
+				<Title order={1}>My decks</Title>
+				{!loading && decks.length > 0 && (
+					<Button
+						onClick={() => {
+							openContextModal({
+								modal: "createDeck",
+								title: "New deck",
+								innerProps: {}
+							});
+						}}
+					>
+						New deck
+					</Button>
+				)}
+			</Flex>
 			{loading ? (
 				<Loader mt="lg" />
 			) : decks.length > 0 ? (
-				<Grid></Grid>
+				<Grid gap={"sm"} mt={"md"}>
+					{decks.map(d => (
+						<GridCol span={{ base: 12, md: 6 }} key={d.id}>
+							<Card>
+								<Title order={3}>{d.name}</Title>
+								<Flex gap={"sm"} mt={"sm"}>
+									<Button>Open</Button>
+									<Button variant="outline">Study</Button>
+								</Flex>
+							</Card>
+						</GridCol>
+					))}
+				</Grid>
 			) : (
 				<Flex
 					direction="column"
@@ -45,7 +83,17 @@ export default function Dashboard() {
 						Get started with Tally by creating your very first
 						flashcard deck.
 					</Text>
-					<Button mt="sm" size="lg">
+					<Button
+						mt="sm"
+						size="lg"
+						onClick={() => {
+							openContextModal({
+								modal: "createDeck",
+								title: "New deck",
+								innerProps: {}
+							});
+						}}
+					>
 						Make a deck
 					</Button>
 				</Flex>
