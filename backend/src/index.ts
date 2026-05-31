@@ -1,12 +1,15 @@
 import Fastify from "fastify";
-import { Yapper } from "./utils/Yapper.js";
+import { Logger } from "./utils/Logger.js";
 import { setupAccountRoutes } from "./routes/accounts.js";
 import { setupDeckRoutes } from "./routes/decks.js";
 import { setupPlayRoutes } from "./routes/plays.js";
 import cors from "@fastify/cors";
+import { runMigrations } from "./utils/db.js";
+
+export const loggerInstance = new Logger();
 
 export const server = Fastify({
-	loggerInstance: new Yapper()
+	loggerInstance
 });
 
 server.addHook("onSend", async (req, res, payload) => {
@@ -27,6 +30,8 @@ server.register(cors, {
 	methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
 	credentials: true
 });
+
+runMigrations();
 
 setupAccountRoutes();
 setupDeckRoutes();

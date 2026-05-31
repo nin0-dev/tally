@@ -14,7 +14,7 @@ function getDateTime() {
 	return `${hours}:${minutes}:${seconds} ${day}-${month}-${year}`;
 }
 
-export class Yapper {
+export class Logger {
 	constructor() {}
 	trace(obj) {
 		if (__DEV__)
@@ -65,7 +65,7 @@ export class Yapper {
 		);
 	}
 	child() {
-		return new Yapper();
+		return new Logger();
 	}
 	level; // unused
 	silent; // unused
