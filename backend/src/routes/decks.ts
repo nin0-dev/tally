@@ -1,7 +1,7 @@
 import { server } from "../index.js";
 import { getUserIDForRequest } from "../utils/auth.js";
 import { db } from "../utils/db.js";
-import { Question, TBCDeck } from "../utils/types.js";
+import { Deck, Question, TBCDeck } from "../utils/types.js";
 import { generateID, validateDeckID } from "../utils/utils.js";
 import z from "zod";
 
@@ -90,12 +90,16 @@ export function setupDeckRoutes() {
 
 			const ownedDecks = await db
 				.selectFrom("decks")
-				.select(["name", "id"])
+				.select(["name", "id", "content"])
 				.where("owner", "=", u)
 				.execute();
 
 			return {
-				ownedDecks
+				ownedDecks: ownedDecks.map(deck => ({
+					name: deck.name,
+					id: deck.id,
+					questionCount: JSON.parse(deck.content ?? "[]").length
+				}))
 			};
 		} else {
 			let deck: {
