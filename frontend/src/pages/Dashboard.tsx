@@ -14,10 +14,13 @@ import { RestAPI } from "../utils/RestAPI";
 import { type HomeDeck } from "../utils/types";
 import { showErrorNotification } from "../utils/notify";
 import { openContextModal } from "@mantine/modals";
+import { useLocation } from "wouter";
 
 export default function Dashboard() {
 	const [decks, setDecks] = useState<HomeDeck[]>([]);
 	const [loading, setLoading] = useState(true);
+	const [, setLocation] = useLocation();
+
 	useEffect(() => {
 		RestAPI.get("/deck/@me", {}).then(t => {
 			if (t.ok) {
@@ -44,6 +47,9 @@ export default function Dashboard() {
 				<Title order={1}>My decks</Title>
 				{!loading && decks.length > 0 && (
 					<Button
+						style={{
+							marginLeft: "auto"
+						}}
 						onClick={() => {
 							openContextModal({
 								modal: "createDeck",
@@ -64,9 +70,18 @@ export default function Dashboard() {
 						<GridCol span={{ base: 12, md: 6 }} key={d.id}>
 							<Card>
 								<Title order={3}>{d.name}</Title>
-								<Flex gap={"sm"} mt={"sm"}>
-									<Button>Open</Button>
-									<Button variant="outline">Study</Button>
+								<Text c="dimmed">
+									{d.questionCount} question
+									{d.questionCount !== 1 && "s"}
+								</Text>
+								<Flex gap={"sm"} mt={"sm"} justify={"flex-end"}>
+									<Button
+										onClick={() =>
+											setLocation(`/deck/${d.id}`)
+										}
+									>
+										Open
+									</Button>
 								</Flex>
 							</Card>
 						</GridCol>

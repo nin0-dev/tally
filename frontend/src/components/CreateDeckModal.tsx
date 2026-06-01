@@ -59,7 +59,7 @@ export default function CreateDeckModal({ context, id }: ContextModalProps) {
 					{...form.getInputProps("name")}
 				/>
 				<Group justify="flex-end" mt="md">
-					<Button type="submit">OK</Button>
+					<Button type="submit">Create</Button>
 				</Group>
 			</form>
 		</Box>
