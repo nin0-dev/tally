@@ -26,7 +26,6 @@ export const RestAPI = {
 		endpoint: Endpoint,
 		extra: Extra
 	): RT {
-		 
 		const extras: any = {
 			headers: {}
 		};
@@ -44,40 +43,46 @@ export const RestAPI = {
 			extras.headers["Content-Type"] = "application/json";
 			extras.body = JSON.stringify(extra.body);
 		}
-		const request = await fetch(
-			`${window.TALLY_CLIENT_CONFIG.apiBaseURL}${endpoint}`,
-			{
-				method,
-				...extras
-			}
-		);
-
-		 
-		const bodyContainer: any = {};
 		try {
-			bodyContainer.body = await request.json();
-		} catch {
-			/* */
-		}
-
-		const ok = request.status < 300 && request.status > 199;
-		if (!ok) {
-			if (request.status === 401 && account.accountID) {
-				account.logOut();
-				navigate("/");
+			const request = await fetch(
+				`${window.TALLY_CLIENT_CONFIG.apiBaseURL}${endpoint}`,
+				{
+					method,
+					...extras
+				}
+			);
+			const bodyContainer: any = {};
+			try {
+				bodyContainer.body = await request.json();
+			} catch {
+				/* */
 			}
-			extra.errors[500] = "Validation / internal error";
-			extra.errors[401] = "Authentication error";
-			bodyContainer.error =
-				extra.errors[request.status] ??
-				`Unknown error ${request.status}`;
-		}
 
-		return {
-			ok,
-			status: request.status,
-			...bodyContainer
-		};
+			const ok = request.status < 300 && request.status > 199;
+			if (!ok) {
+				if (request.status === 401 && account.accountID) {
+					account.logOut();
+					navigate("/");
+				}
+				extra.errors[500] = "Validation / internal error";
+				extra.errors[401] = "Authentication error";
+				bodyContainer.error =
+					extra.errors[request.status] ??
+					`Unknown error ${request.status}`;
+			}
+
+			return {
+				ok,
+				status: request.status,
+				...bodyContainer
+			};
+		} catch (e) {
+			return {
+				ok: false,
+				status: -1,
+				error: e.toString()
+			};
+		}
 	},
 
 	async get(endpoint: Endpoint, extra: Extra): RT {
