@@ -1,6 +1,5 @@
 import { Box, Divider, Grid, Text, Title } from "@mantine/core";
 import Flashcard from "../components/Flashcard";
-import { Link } from "wouter";
 import HomepageHeader from "../components/HomepageHeader";
 
 function SellingPoint({
