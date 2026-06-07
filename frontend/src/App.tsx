@@ -14,6 +14,7 @@ import LoginModal from "./components/LoginModal";
 import { useAccount } from "./stores/account";
 import Dashboard from "./pages/Dashboard";
 import CreateDeckModal from "./components/CreateDeckModal";
+import DeckHome from "./pages/DeckHome";
 
 export default function App() {
 	const colorScheme = useColorScheme();
@@ -58,6 +59,10 @@ export default function App() {
 									<Route
 										path="/account"
 										component={MyAccount}
+									/>
+									<Route
+										path="/deck/:id"
+										component={DeckHome}
 									/>
 								</Switch>
 							</Container>

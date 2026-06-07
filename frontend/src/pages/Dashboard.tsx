@@ -47,6 +47,7 @@ export default function Dashboard() {
 				<Title order={1}>My decks</Title>
 				{!loading && decks.length > 0 && (
 					<Button
+						variant="default"
 						style={{
 							marginLeft: "auto"
 						}}
