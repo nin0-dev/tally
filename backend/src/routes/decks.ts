@@ -37,27 +37,24 @@ function calculatePriority(history?: string) {
 
 export function setupDeckRoutes() {
 	server.get("/deck/:id/queue", async (req, res) => {
+		const u = await getUserIDForRequest(req);
 		const deckID = validateDeckID(req);
 
 		try {
+			const deck = await db
+				.selectFrom("decks")
+				.select(["content", "shared", "owner"])
+				.where("id", "=", deckID)
+				.executeTakeFirstOrThrow();
+			if (!deck.shared && u !== deck.owner) return res.code(404).send();
+
 			var deckQuestions = z
 				.array(Question)
-				.parse(
-					JSON.parse(
-						(
-							await db
-								.selectFrom("decks")
-								.select("content")
-								.where("id", "=", deckID)
-								.executeTakeFirstOrThrow()
-						).content ?? "[]"
-					)
-				);
+				.parse(JSON.parse(deck.content ?? "[]"));
 		} catch {
 			return res.code(404).send();
 		}
 
-		const u = await getUserIDForRequest(req);
 		let history: Record<string, string> = {};
 		if (u) {
 			const playData = await db
