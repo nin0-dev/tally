@@ -14,7 +14,8 @@ export const db = new Kysely<DB>({
 	dialect
 });
 
-rawDb.exec("PRAGMA foreign_keys = ON;");
+rawDb.pragma("foreign_keys = ON;");
+rawDb.pragma("journal_mode = WAL;");
 
 export function runMigrations() {
 	const ver: number = rawDb.pragma("user_version", {
