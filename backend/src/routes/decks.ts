@@ -83,9 +83,9 @@ export function setupDeckRoutes() {
 
 	server.get("/deck/:id", async (req, res) => {
 		if (!(req.params as any).id) return res.status(400).send();
+		const u = await getUserIDForRequest(req);
 		const { id }: { id: string } = req.params as any;
 		if (id === "@me") {
-			const u = await getUserIDForRequest(req);
 			if (!u) return res.status(401).send();
 
 			const ownedDecks = await db
@@ -108,6 +108,7 @@ export function setupDeckRoutes() {
 				id: string;
 				name: string;
 				owner_name: string;
+				shared: number | null;
 			};
 			try {
 				deck = await db
@@ -118,10 +119,14 @@ export function setupDeckRoutes() {
 						"decks.name",
 						"decks.owner",
 						"decks.content",
+						"decks.shared",
 						"users.name as owner_name"
 					])
 					.where("decks.id", "=", id)
 					.executeTakeFirstOrThrow();
+
+				if (!deck.shared && u !== deck.owner)
+					return res.code(404).send();
 			} catch {
 				return res.code(404).send();
 			}
@@ -160,11 +165,12 @@ export function setupDeckRoutes() {
 	server.put("/deck/:id", async (req, res) => {
 		const u = await getUserIDForRequest(req);
 		if (!u) return res.status(401).send();
-		const { name, owner, questions } = z
+		const { name, owner, questions, shared } = z
 			.object({
 				name: z.string().optional(),
 				owner: z.string().optional(),
-				questions: z.array(Question).optional()
+				questions: z.array(Question).optional(),
+				shared: z.boolean().optional()
 			})
 			.parse(req.body);
 		const id = validateDeckID(req);
@@ -184,6 +190,7 @@ export function setupDeckRoutes() {
 			name?: string;
 			owner?: string;
 			content?: string;
+			shared?: number;
 		} = {};
 		if (name) pendingUpdates.name = name;
 		if (owner) {
@@ -221,6 +228,9 @@ export function setupDeckRoutes() {
 			});
 			pendingUpdates.content = JSON.stringify(newQuestions);
 		}
+		if (typeof shared !== "undefined") {
+			pendingUpdates.shared = shared ? 1 : 0;
+		}
 
 		if (Object.keys(pendingUpdates).length > 0) {
 			await db
@@ -233,6 +243,7 @@ export function setupDeckRoutes() {
 		return {
 			name: pendingUpdates.name ?? deck.name,
 			id: deck.id,
+			shared: typeof shared !== "undefined" ? shared : !!deck.shared,
 			questions: pendingUpdates.content
 				? JSON.parse(pendingUpdates.content)
 				: JSON.parse(deck.content ?? "[]")
