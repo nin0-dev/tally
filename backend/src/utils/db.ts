@@ -22,7 +22,7 @@ export function runMigrations() {
 	}) as number;
 	const migrationsPath = process.env.MIGRATIONS_PATH ?? "sql/";
 
-	const migrationRegex = /^(\d{4})_([a-z]+)\.sql$/;
+	const migrationRegex = /^(\d{4})_([a-z_]+)\.sql$/;
 	const migrationsToApply = readdirSync(migrationsPath)
 		.filter(f => migrationRegex.test(f))
 		.map(f => ({
