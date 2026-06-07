@@ -64,7 +64,9 @@ export const RestAPI = {
 					account.logOut();
 					navigate("/");
 				}
-				extra.errors[500] = "Validation / internal error";
+				extra.errors[500] =
+					"Internal error. If you are the instance owner, check server logs";
+				extra.errors[400] = "Validation error";
 				extra.errors[401] = "Authentication error";
 				bodyContainer.error =
 					extra.errors[request.status] ??
