@@ -33,7 +33,11 @@ export const useDecks = create<{
 			failedDecks: { ...state.failedDecks, [id]: undefined }
 		}));
 
-		const req = await RestAPI.get(`/deck/${id}`, {});
+		const req = await RestAPI.get(`/deck/${id}`, {
+			errors: {
+				404: "Either this deck is private, or it does not exist."
+			}
+		});
 		if (req.ok) {
 			set(state => ({
 				loadingDecks: get().loadingDecks.filter(d => d !== id),

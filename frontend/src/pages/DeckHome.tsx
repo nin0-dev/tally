@@ -12,7 +12,12 @@ import {
 import { useDecks } from "../stores/decks";
 import { useAccount } from "../stores/account";
 import { useEffect } from "react";
-import { CopyIcon, InfoIcon, UsersIcon } from "@phosphor-icons/react";
+import {
+	CopyIcon,
+	InfoIcon,
+	UsersIcon,
+	WarningCircleIcon
+} from "@phosphor-icons/react";
 
 export default function DeckHome({
 	params: { id }
@@ -35,8 +40,18 @@ export default function DeckHome({
 
 	return (
 		<Box>
+			{failed && (
+				<Alert
+					variant="light"
+					color="red"
+					title="Couldn't load deck"
+					icon={<WarningCircleIcon size={32} weight="fill" />}
+				>
+					{failed}
+				</Alert>
+			)}
 			{loading || !deck ? (
-				<Loader mt="lg" />
+				!failed && <Loader mt="lg" />
 			) : (
 				<Box>
 					<Flex direction="column" gap="sm">
