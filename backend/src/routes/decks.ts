@@ -1,6 +1,11 @@
 import { server } from "../index.js";
 import { getUserIDForRequest } from "../utils/auth.js";
 import { db } from "../utils/db.js";
+import {
+	NotFoundError,
+	UnauthorizedError,
+	ValidationError
+} from "../utils/errors.js";
 import { Deck, Question, TBCDeck } from "../utils/types.js";
 import { generateID, validateDeckID } from "../utils/utils.js";
 import z from "zod";
@@ -46,13 +51,13 @@ export function setupDeckRoutes() {
 				.select(["content", "shared", "owner"])
 				.where("id", "=", deckID)
 				.executeTakeFirstOrThrow();
-			if (!deck.shared && u !== deck.owner) return res.code(404).send();
+			if (!deck.shared && u !== deck.owner) throw new NotFoundError();
 
 			var deckQuestions = z
 				.array(Question)
 				.parse(JSON.parse(deck.content ?? "[]"));
 		} catch {
-			return res.code(404).send();
+			throw new NotFoundError();
 		}
 
 		let history: Record<string, string> = {};
@@ -79,11 +84,11 @@ export function setupDeckRoutes() {
 	});
 
 	server.get("/deck/:id", async (req, res) => {
-		if (!(req.params as any).id) return res.status(400).send();
+		if (!(req.params as any).id) throw new ValidationError();
 		const u = await getUserIDForRequest(req);
 		const { id }: { id: string } = req.params as any;
 		if (id === "@me") {
-			if (!u) return res.status(401).send();
+			if (!u) throw new UnauthorizedError();
 
 			const ownedDecks = await db
 				.selectFrom("decks")
@@ -122,10 +127,9 @@ export function setupDeckRoutes() {
 					.where("decks.id", "=", id)
 					.executeTakeFirstOrThrow();
 
-				if (!deck.shared && u !== deck.owner)
-					return res.code(404).send();
+				if (!deck.shared && u !== deck.owner) throw new NotFoundError();
 			} catch {
-				return res.code(404).send();
+				throw new NotFoundError();
 			}
 
 			return {
@@ -142,7 +146,7 @@ export function setupDeckRoutes() {
 
 	server.post("/deck", async (req, res) => {
 		const u = await getUserIDForRequest(req);
-		if (!u) return res.status(401).send();
+		if (!u) throw new UnauthorizedError();
 
 		const data = TBCDeck.parse(req.body);
 		const id = generateID(12);
@@ -161,7 +165,7 @@ export function setupDeckRoutes() {
 
 	server.put("/deck/:id", async (req, res) => {
 		const u = await getUserIDForRequest(req);
-		if (!u) return res.status(401).send();
+		if (!u) throw new UnauthorizedError();
 		const { name, owner, questions, shared } = z
 			.object({
 				name: z.string().optional(),
@@ -179,9 +183,9 @@ export function setupDeckRoutes() {
 				.where("id", "=", id)
 				.executeTakeFirstOrThrow();
 		} catch {
-			return res.status(404).send();
+			throw new NotFoundError();
 		}
-		if (deck.owner !== u) return res.status(404).send();
+		if (deck.owner !== u) throw new NotFoundError();
 
 		const pendingUpdates: {
 			name?: string;
@@ -196,7 +200,7 @@ export function setupDeckRoutes() {
 				.select("allow_transfer")
 				.where("id", "=", owner)
 				.executeTakeFirst();
-			if (!resp) return res.code(404).send();
+			if (!resp) throw new NotFoundError();
 			const { allow_transfer } = resp;
 			if (allow_transfer !== 1) return res.code(403).send();
 			await db
@@ -249,7 +253,7 @@ export function setupDeckRoutes() {
 
 	server.delete("/deck/:id", async (req, res) => {
 		const u = await getUserIDForRequest(req);
-		if (!u) return res.status(401).send();
+		if (!u) throw new UnauthorizedError();
 		const id = validateDeckID(req);
 
 		try {
@@ -259,9 +263,9 @@ export function setupDeckRoutes() {
 				.where("id", "=", id)
 				.executeTakeFirstOrThrow();
 		} catch {
-			return res.status(404).send();
+			throw new NotFoundError();
 		}
-		if (deck.owner !== u) return res.status(404).send();
+		if (deck.owner !== u) throw new NotFoundError();
 
 		await db.deleteFrom("decks").where("id", "=", id).execute();
 		res.status(204).send();

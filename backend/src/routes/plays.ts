@@ -4,11 +4,12 @@ import { getUserIDForRequest } from "../utils/auth.js";
 import { db } from "../utils/db.js";
 import { validateDeckID } from "../utils/utils.js";
 import { stat } from "fs/promises";
+import { UnauthorizedError } from "../utils/errors.js";
 
 export function setupPlayRoutes() {
 	server.get("/plays/:id", async (req, res) => {
 		const u = await getUserIDForRequest(req);
-		if (!u) return res.code(401).send();
+		if (!u) throw new UnauthorizedError();
 		const id = validateDeckID(req);
 
 		try {
@@ -30,7 +31,7 @@ export function setupPlayRoutes() {
 
 	server.post("/plays/:id", async (req, res) => {
 		const u = await getUserIDForRequest(req);
-		if (!u) return res.code(401).send();
+		if (!u) throw new UnauthorizedError();
 		const id = validateDeckID(req);
 
 		const body = z
@@ -84,7 +85,7 @@ export function setupPlayRoutes() {
 
 	server.delete("/plays/:id", async (req, res) => {
 		const u = await getUserIDForRequest(req);
-		if (!u) return res.code(401).send();
+		if (!u) throw new UnauthorizedError();
 		const id = validateDeckID(req);
 
 		await db

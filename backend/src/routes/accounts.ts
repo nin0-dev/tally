@@ -6,11 +6,12 @@ import { AuthedUser, TBCUser } from "../utils/types.js";
 import { generateID } from "../utils/utils.js";
 import z from "zod";
 import { validateTurnstile } from "../utils/turnstile.js";
+import { UnauthorizedError, ValidationError } from "../utils/errors.js";
 
 export function setupAccountRoutes() {
 	server.get("/accounts", async (req, res) => {
 		const u = await getUserIDForRequest(req);
-		if (!u) return res.status(401).send();
+		if (!u) throw new UnauthorizedError();
 
 		const user = await db
 			.selectFrom("users")
@@ -26,7 +27,7 @@ export function setupAccountRoutes() {
 
 	server.post("/accounts/rotate", async (req, res) => {
 		const u = await getUserIDForRequest(req);
-		if (!u) return res.status(401).send();
+		if (!u) throw new UnauthorizedError();
 
 		const key = generateID(32);
 
@@ -41,7 +42,7 @@ export function setupAccountRoutes() {
 
 	server.get("/accounts/export", async (req, res) => {
 		const u = await getUserIDForRequest(req);
-		if (!u) return res.status(401).send();
+		if (!u) throw new UnauthorizedError();
 
 		const user = await db
 			.selectFrom("users")
@@ -82,7 +83,7 @@ export function setupAccountRoutes() {
 
 	server.delete("/accounts", async (req, res) => {
 		const u = await getUserIDForRequest(req);
-		if (!u) return res.status(401).send();
+		if (!u) throw new UnauthorizedError();
 
 		await db.deleteFrom("users").where("id", "=", u).execute();
 		await db.deleteFrom("decks").where("owner", "=", u).execute();
@@ -93,7 +94,7 @@ export function setupAccountRoutes() {
 
 	server.put("/accounts", async (req, res) => {
 		const u = await getUserIDForRequest(req);
-		if (!u) return res.status(401).send();
+		if (!u) throw new UnauthorizedError();
 
 		const { name, allow_transfer } = z
 			.object({
@@ -107,7 +108,7 @@ export function setupAccountRoutes() {
 			allow_transfer?: number;
 		} = {};
 		if (name !== undefined) {
-			if (!name?.trim().length) return res.status(400).send();
+			if (!name?.trim().length) throw new ValidationError();
 			pendingUpdates.name = name.trim();
 		}
 		if (allow_transfer !== undefined)
