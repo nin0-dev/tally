@@ -1,8 +1,13 @@
 packages:
-    - backend
-    - frontend
+  - backend
+  - frontend
+
+allowBuilds:
+  argon2: true
+  better-sqlite3: true
+  esbuild: true
 
 onlyBuiltDependencies:
-    - argon2
-    - better-sqlite3
-    - esbuild
+  - argon2
+  - better-sqlite3
+  - esbuild

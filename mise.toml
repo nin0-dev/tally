@@ -1,0 +1,19 @@
+[tools]
+node = "26"
+pnpm = "11"
+prettier = "latest"
+
+[env]
+_.file = ".env"
+
+[tasks.backend]
+run = "pnpm --filter ./backend build && pnpm --filter ./backend start"
+
+[tasks.frontend]
+run = "pnpm --filter ./frontend dev --host"
+
+[tasks.build]
+run = "pnpm --filter ./backend build && pnpm --filter ./frontend build"
+
+[tasks.prepare-db]
+run = "pnpm --filter ./backend generateSchema"

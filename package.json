@@ -1,9 +1,4 @@
 {
-    "name": "tally",
-    "private": true,
-    "scripts": {
-        "dev-b": "pnpm --filter ./backend build && pnpm --filter ./backend start",
-        "dev-f": "pnpm --filter ./frontend dev --host",
-        "build": "pnpm --filter ./backend build && pnpm --filter ./frontend build"
-    }
+	"name": "tally",
+	"private": true
 }
