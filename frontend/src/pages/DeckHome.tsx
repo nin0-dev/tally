@@ -6,6 +6,7 @@ import {
 	Button,
 	Flex,
 	Loader,
+	Menu,
 	Text,
 	Title
 } from "@mantine/core";
@@ -13,11 +14,16 @@ import { useDecks } from "../stores/decks";
 import { useAccount } from "../stores/account";
 import { useEffect } from "react";
 import {
+	ArrowBendUpRightIcon,
 	CopyIcon,
 	InfoIcon,
+	LinkIcon,
+	PencilIcon,
+	TrashIcon,
 	UsersIcon,
 	WarningCircleIcon
 } from "@phosphor-icons/react";
+import { showSuccessNotification } from "../utils/notify";
 
 export default function DeckHome({
 	params: { id }
@@ -72,7 +78,69 @@ export default function DeckHome({
 						<Flex gap="sm" align="center">
 							<Title order={1}>{deck.name}</Title>
 							{isDeckOwnedByYou ? (
-								<Button variant="default">Manage deck</Button>
+								<Menu shadow="md" width={200}>
+									<Menu.Target>
+										<Button variant="default">
+											Manage deck
+										</Button>
+									</Menu.Target>
+									<Menu.Dropdown>
+										<Menu.Item
+											leftSection={<LinkIcon size={14} />}
+											onClick={() =>
+												navigator.clipboard
+													.writeText(
+														window.location.href
+													)
+													.then(() =>
+														showSuccessNotification(
+															{
+																title: "Success",
+																message:
+																	"Link copied to clipboard"
+															}
+														)
+													)
+											}
+										>
+											Copy link
+										</Menu.Item>
+										<Menu.Divider />
+										<Menu.Item
+											leftSection={
+												<PencilIcon size={14} />
+											}
+										>
+											Rename deck
+										</Menu.Item>
+										<Menu.Item
+											leftSection={
+												<UsersIcon size={14} />
+											}
+										>
+											Manage access
+										</Menu.Item>
+										<Menu.Divider />
+										<Menu.Item
+											color="red"
+											leftSection={
+												<ArrowBendUpRightIcon
+													size={14}
+												/>
+											}
+										>
+											Transfer ownership
+										</Menu.Item>
+										<Menu.Item
+											color="red"
+											leftSection={
+												<TrashIcon size={14} />
+											}
+										>
+											Delete deck
+										</Menu.Item>
+									</Menu.Dropdown>
+								</Menu>
 							) : (
 								<>
 									<ActionIcon
