@@ -78,7 +78,7 @@ export default function ConfirmedRegModal({
 			<Card>
 				<Text fw={500}>Secret key</Text>
 				<Text ff={"monospace"} style={{ wordBreak: "break-all" }}>
-					{showKey ? key : "⦿".repeat(key.length)}
+					{showKey ? key : "*".repeat(key.length)}
 				</Text>
 				<Checkbox
 					label="Reveal"
