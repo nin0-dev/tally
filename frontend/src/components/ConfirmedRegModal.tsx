@@ -1,12 +1,10 @@
 import {
 	Alert,
-	Box,
 	Button,
 	Card,
 	Checkbox,
 	Flex,
 	Group,
-	Space,
 	Text
 } from "@mantine/core";
 import { closeModal, type ContextModalProps } from "@mantine/modals";
@@ -16,7 +14,6 @@ import { useAccount } from "../stores/account";
 import { download } from "../utils/download";
 
 export default function ConfirmedRegModal({
-	context,
 	id,
 	innerProps
 }: ContextModalProps) {
@@ -24,7 +21,6 @@ export default function ConfirmedRegModal({
 	const { accountID, key }: { accountID: string; key: string } =
 		innerProps as any;
 	const [showKey, setShowKey] = useState(false);
-	const [hasBeenRevealedOnce, setHasBeenRevealedOnce] = useState(false);
 	const [hasAcknowledged, setHasAcknowledged] = useState(false);
 
 	return (
@@ -85,7 +81,6 @@ export default function ConfirmedRegModal({
 					mt="xs"
 					checked={showKey}
 					onChange={t => {
-						setHasBeenRevealedOnce(true);
 						setShowKey(t.currentTarget.checked);
 					}}
 				/>

@@ -8,7 +8,7 @@ import {
 import { useState } from "react";
 import Spin from "./Spin";
 import { RestAPI } from "../utils/RestAPI";
-import { lockModal, unlockModal } from "../utils/modals";
+import { lockModal, showAlertModal, unlockModal } from "../utils/modals";
 import {
 	showErrorNotification,
 	showSuccessNotification
@@ -72,11 +72,54 @@ export default function LoginModal({ context, id }: ContextModalProps) {
 					<TextInput
 						withAsterisk
 						data-autofocus
-						label="Secret key"
+						label={
+							<>
+								{"Secret key "}
+								<Anchor
+									size="xs"
+									component="button"
+									type="button"
+									onClick={() =>
+										showAlertModal({
+											title: "Forgot key?",
+											children: (
+												<>
+													Tally does not save your
+													email, or any other
+													identifying information.
+													Without your account ID and
+													key, you cannot recover your
+													account, and will have to
+													make a new one.
+													<br />
+													The instance operator also
+													cannot help you recover your
+													account by contacting them,
+													as there is no way to
+													validate that you are who
+													you claim to be.
+													<br />
+													<br />
+													At registration time, you
+													downloaded your account info
+													in a file named
+													"tally-login-[account_id].txt",
+													you can try finding that
+													file.
+												</>
+											)
+										})
+									}
+								>
+									(I forgot my key)
+								</Anchor>
+							</>
+						}
 						type="password"
 						key={form.key("secretKey")}
 						{...form.getInputProps("secretKey")}
 					/>
+
 					<Group justify="flex-end" mt="md">
 						<Anchor
 							component="button"

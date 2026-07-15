@@ -1,3 +1,6 @@
+import { openConfirmModal } from "@mantine/modals";
+import type { ReactNode } from "react";
+
 export function lockModal(
 	id: string,
 	context: any,
@@ -26,4 +29,24 @@ export function unlockModal(
 		closeButtonProps: { disabled: false }
 	});
 	setSpin(false);
+}
+
+export function showAlertModal({
+	title,
+	children,
+	onConfirm
+}: {
+	title: string;
+	children: ReactNode;
+	onConfirm?: () => void;
+}) {
+	openConfirmModal({
+		title,
+		children,
+		labels: { confirm: "OK", cancel: "" },
+		cancelProps: {
+			display: "none"
+		},
+		onConfirm: () => onConfirm?.()
+	});
 }
