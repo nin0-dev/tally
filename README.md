@@ -1,6 +1,6 @@
 # Tally
 
-> [!INFO]
+> [!TIP]
 >
 > This repo is mirrored to GitHub, and Codeberg.
 >
