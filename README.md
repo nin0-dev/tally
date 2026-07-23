@@ -6,7 +6,8 @@
 >
 > - GitHub, [nin0-dev/tally](https://github.com/nin0-dev/tally).
 > - Codeberg, [nin0dev/tally](https://codeberg.org/nin0dev/tally).
->   The main repo is stored on my own git instance, [git.nin0.dev/nin0/tally](https://git.nin0.dev/nin0/tally).
+>
+> The main repo is stored on my own git instance, [git.nin0.dev/nin0/tally](https://git.nin0.dev/nin0/tally).
 >
 > You may open issues on either of the 3, but PRs are only open on the main repo.
 
