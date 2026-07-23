@@ -1,6 +1,7 @@
 # Tally
 
 > [!info]
+>
 > This repo is mirrored to GitHub, and Codeberg.
 >
 > - GitHub, [nin0-dev/tally](https://github.com/nin0-dev/tally).
