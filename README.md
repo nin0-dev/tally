@@ -15,11 +15,15 @@
 
 A simple, yet powerful, flashcard utility.
 
-- No personal info is collected, similarly to [Mullvad VPN](https://mullvad.net) you get a random account ID and key that you use to login;
+- No personal info is collected, at registration time, you get an account ID and key you can use to login (similarly to Mullvad VPN);
 - Being web-based, it is compatible with any device, desktop or mobile, and can be installed as a PWA;
 - Easily format your cards, add images from other sources using Markdown;
-- Learns from you, by weighing which cards need to be reviewed first (it is not spaced repetition however).
+- Learns from you, by weighing which cards need to be reviewed first (it is not spaced repetition, however).
 
 ## How do I use it?
 
-Either use the hosted instance (tba), or you can self-host it.
+Either use the hosted instance (tba), or you can self-host it (also, tba).
+
+## AI usage/policy
+
+No AI was used in writing any of Tally's code, or documentation. With that in mind, please do not use AI to fully generate contributions (**this includes issues/PR descriptions**).
