@@ -136,6 +136,7 @@ export function setupDeckRoutes() {
 				id: deck.id,
 				name: deck.name,
 				questions: JSON.parse(deck.content ?? "[]"),
+				shared: deck.shared,
 				owner: {
 					name: deck.owner_name,
 					id: deck.owner
