@@ -77,6 +77,17 @@ export default function DeckHome({
 						)}
 						<Flex gap="sm" align="center">
 							<Title order={1}>{deck.name}</Title>
+							{deck.shared ? (
+								<Badge
+									color="dark"
+									variant="light"
+									leftSection={<UsersIcon weight="fill" />}
+								>
+									Shared
+								</Badge>
+							) : (
+								<></>
+							)}
 							{isDeckOwnedByYou ? (
 								<Menu shadow="md" width={200}>
 									<Menu.Target>
@@ -142,23 +153,12 @@ export default function DeckHome({
 									</Menu.Dropdown>
 								</Menu>
 							) : (
-								<>
-									<ActionIcon
-										variant="default"
-										disabled={!currentUser.accountID}
-									>
-										<CopyIcon weight="fill" />
-									</ActionIcon>
-									<Badge
-										color="dark"
-										variant="light"
-										leftSection={
-											<UsersIcon weight="fill" />
-										}
-									>
-										Shared
-									</Badge>
-								</>
+								<ActionIcon
+									variant="default"
+									disabled={!currentUser.accountID}
+								>
+									<CopyIcon weight="fill" />
+								</ActionIcon>
 							)}
 						</Flex>
 						<Box>

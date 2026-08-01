@@ -5,6 +5,7 @@ export const useDecks = create<{
 	decks: {
 		[id: string]: {
 			name: string;
+			shared: boolean;
 			questions: {
 				id: string;
 				question: string;
