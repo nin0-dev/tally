@@ -1,21 +1,7 @@
-import {
-	Alert,
-	Box,
-	Button,
-	Checkbox,
-	Divider,
-	Flex,
-	Loader,
-	Text,
-	TextInput,
-	Title
-} from "@mantine/core";
+import { Alert, Box, Button, Checkbox, Divider, Flex, Loader, Text, TextInput, Title } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { RestAPI } from "../utils/RestAPI";
-import {
-	showErrorNotification,
-	showSuccessNotification
-} from "../utils/notify";
+import { showErrorNotification, showSuccessNotification } from "../utils/notify";
 import { useAccount } from "../stores/account";
 import { openConfirmModal } from "@mantine/modals";
 import { WarningIcon } from "@phosphor-icons/react";
@@ -28,9 +14,7 @@ export default function MyAccount() {
 	const account = useAccount();
 	const [id, setId] = useState<string | undefined>(undefined);
 	const [revealKey, setRevealKey] = useState(false);
-	const [allowTransfer, setAllowTransfer] = useState<boolean | undefined>(
-		undefined
-	);
+	const [allowTransfer, setAllowTransfer] = useState<boolean | undefined>(undefined);
 
 	useEffect(() => {
 		RestAPI.get("/accounts", {
@@ -53,20 +37,10 @@ export default function MyAccount() {
 	return (
 		<Box>
 			<Title order={1}>My account</Title>
-			<Flex
-				direction="column"
-				mt="md"
-				gap="md"
-				style={id ? {} : { alignItems: "center" }}
-			>
+			<Flex direction="column" mt="md" gap="md" style={id ? {} : { alignItems: "center" }}>
 				{id ? (
 					<>
-						<TextInput
-							data-autofocus
-							label="Account ID"
-							value={id}
-							readOnly={true}
-						/>
+						<TextInput data-autofocus label="Account ID" value={id} readOnly={true} />
 						<TextInput
 							data-autofocus
 							label="Account name"
@@ -76,9 +50,7 @@ export default function MyAccount() {
 						/>
 						<Checkbox
 							checked={allowTransfer}
-							onChange={e =>
-								setAllowTransfer(e.currentTarget.checked)
-							}
+							onChange={e => setAllowTransfer(e.currentTarget.checked)}
 							label="Allow deck transfer"
 							description="If you enable this, Tally will allow one deck to be transferred to your account. This option is automatically disabled after a successful transfer."
 						/>
@@ -95,36 +67,24 @@ export default function MyAccount() {
 											400: "Your account must have a name"
 										}
 									});
-									req.ok
-										? showSuccessNotification({
-												title: "Success",
-												message:
-													"Account information saved"
-											})
-										: showErrorNotification({
-												title: "Couldn't save account info",
-												message: req.error
-											});
+									if (req.ok)
+										showSuccessNotification({
+											title: "Success",
+											message: "Account information saved"
+										});
+									else
+										showErrorNotification({
+											title: "Couldn't save account info",
+											message: req.error
+										});
 								}}
 							>
 								Save changes
 							</Button>
 						</Box>
 						<Divider />
-						<TextInput
-							data-autofocus
-							label="Secret key"
-							type={revealKey ? "text" : "password"}
-							value={account.key}
-							readOnly={true}
-						/>
-						<Checkbox
-							checked={revealKey}
-							onChange={e =>
-								setRevealKey(e.currentTarget.checked)
-							}
-							label="Reveal key"
-						/>
+						<TextInput data-autofocus label="Secret key" type={revealKey ? "text" : "password"} value={account.key} readOnly={true} />
+						<Checkbox checked={revealKey} onChange={e => setRevealKey(e.currentTarget.checked)} label="Reveal key" />
 						<Box>
 							<Button
 								variant="light"
@@ -140,16 +100,10 @@ export default function MyAccount() {
 										},
 										confirmProps: { color: "red" },
 										async onConfirm() {
-											const req = await RestAPI.post(
-												"/accounts/rotate",
-												{}
-											);
+											const req = await RestAPI.post("/accounts/rotate", {});
 											if (req.ok) {
 												setRevealKey(true);
-												account.logIn(
-													account.accountID,
-													req.body.key
-												);
+												account.logIn(account.accountID, req.body.key);
 												openConfirmModal({
 													title: "Key rotated",
 													labels: {
@@ -165,38 +119,18 @@ export default function MyAccount() {
 														}
 													},
 													children: (
-														<Flex
-															direction="column"
-															gap="sm"
-														>
+														<Flex direction="column" gap="sm">
 															<Text>
-																Your secret key
-																has been
-																successfully
-																rotated. All
-																devices but this
-																one have been
+																Your secret key has been successfully rotated. All devices but this one have been
 																logged out.
 															</Text>
 															<Alert
 																variant="light"
 																color="yellow"
 																title="Important"
-																icon={
-																	<WarningIcon
-																		size={
-																			32
-																		}
-																		weight="fill"
-																	/>
-																}
+																icon={<WarningIcon size={32} weight="fill" />}
 															>
-																Make sure to
-																save your new
-																secret key. If
-																you lose that
-																key, you lose
-																access to your
+																Make sure to save your new secret key. If you lose that key, you lose access to your
 																decks.
 															</Alert>
 														</Flex>
@@ -220,10 +154,7 @@ export default function MyAccount() {
 							<Button
 								variant="light"
 								onClick={async () => {
-									const req = await RestAPI.get(
-										"/accounts/export",
-										{}
-									);
+									const req = await RestAPI.get("/accounts/export", {});
 									if (!req.ok) {
 										showErrorNotification({
 											title: "Couldn't export data",
@@ -231,11 +162,7 @@ export default function MyAccount() {
 										});
 									} else {
 										download({
-											content: JSON.stringify(
-												req.body,
-												null,
-												2
-											),
+											content: JSON.stringify(req.body, null, 2),
 											name: `tally-data-export-${id}-${Math.floor(Date.now() / 1000)}.json`,
 											type: "application/json"
 										});
@@ -264,8 +191,7 @@ export default function MyAccount() {
 											setLocation("/");
 											showSuccessNotification({
 												title: "Logged out",
-												message:
-													"You have been logged out of your account."
+												message: "You have been logged out of your account."
 											});
 										}
 									});
@@ -290,8 +216,7 @@ export default function MyAccount() {
 										onConfirm() {
 											openConfirmModal({
 												title: "Delete account",
-												children:
-													"This is your last chance to cancel. Are you sure?",
+												children: "This is your last chance to cancel. Are you sure?",
 												labels: {
 													confirm: "Yes, I'm sure!",
 													cancel: "Cancel"
@@ -300,21 +225,14 @@ export default function MyAccount() {
 													color: "red"
 												},
 												async onConfirm() {
-													const req =
-														await RestAPI.delete(
-															"/accounts",
-															{}
-														);
+													const req = await RestAPI.delete("/accounts", {});
 													if (req.ok) {
 														account.logOut();
 														setLocation("/");
-														showSuccessNotification(
-															{
-																title: "Success",
-																message:
-																	"Your Tally account has been deleted."
-															}
-														);
+														showSuccessNotification({
+															title: "Success",
+															message: "Your Tally account has been deleted."
+														});
 													} else {
 														showErrorNotification({
 															title: "Couldn't delete account",
