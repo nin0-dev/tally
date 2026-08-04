@@ -14,6 +14,7 @@ import LoginModal from "./components/LoginModal";
 import { useAccount } from "./stores/account";
 import Dashboard from "./pages/Dashboard";
 import CreateDeckModal from "./components/CreateDeckModal";
+import RenameDeckModal from "./components/RenameDeckModal";
 import DeckHome from "./pages/DeckHome";
 
 export default function App() {
@@ -30,7 +31,8 @@ export default function App() {
 						register: RegistrationModal,
 						confirmRegister: ConfirmedRegModal,
 						login: LoginModal,
-						createDeck: CreateDeckModal
+						createDeck: CreateDeckModal,
+						renameDeck: RenameDeckModal
 					}}
 				>
 					<AppShell padding="lg" header={{ height: 60 }}>

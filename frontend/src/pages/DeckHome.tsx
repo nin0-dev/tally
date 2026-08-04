@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { ArrowBendUpRightIcon, CopyIcon, InfoIcon, LinkIcon, PencilIcon, TrashIcon, UsersIcon, WarningCircleIcon } from "@phosphor-icons/react";
 import { showSuccessNotification } from "../utils/notify";
 import { showAlertModal } from "../utils/modals";
+import { openContextModal } from "@mantine/modals";
 
 export default function DeckHome({ params: { id } }: { params: { id: string } }) {
 	const currentUser = useAccount();
@@ -78,7 +79,13 @@ export default function DeckHome({ params: { id } }: { params: { id: string } })
 											Copy link
 										</Menu.Item>
 										<Menu.Divider />
-										<Menu.Item leftSection={<PencilIcon size={14} />}>Rename deck</Menu.Item>
+										<Menu.Item leftSection={<PencilIcon size={14} />} onClick={() => openContextModal({
+											modal: "renameDeck",
+											title: "Rename deck",
+											innerProps: { deckID: id }
+										})}>
+											Rename deck
+										</Menu.Item>
 										<Menu.Item leftSection={<UsersIcon size={14} />}>Manage access</Menu.Item>
 										<Menu.Divider />
 										<Menu.Item color="red" leftSection={<ArrowBendUpRightIcon size={14} />}>

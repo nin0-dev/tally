@@ -22,13 +22,13 @@ export const useDecks = create<{
 	failedDecks: {
 		[id: string]: string;
 	};
-	getDeck: (id: string) => void;
+	getDeck: (id: string, force?: boolean) => void;
 }>()((set, get) => ({
 	decks: {},
 	loadingDecks: [],
 	failedDecks: {},
-	async getDeck(id) {
-		if (get().decks[id] || get().loadingDecks.includes(id)) return;
+	async getDeck(id, force = false) {
+		if ((get().decks[id] || get().loadingDecks.includes(id)) && !force) return;
 		set(state => ({
 			loadingDecks: [...get().loadingDecks, id],
 			failedDecks: { ...state.failedDecks, [id]: undefined }
