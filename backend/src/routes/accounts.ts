@@ -36,6 +36,12 @@ export function setupAccountRoutes() {
 					sameSite: "lax",
 					maxAge: 60 * 60 * 24 * 30
 				});
+				res.setCookie("authed", "1", {
+					path: "/",
+					httpOnly: false,
+					sameSite: "lax",
+					maxAge: 60 * 60 * 24 * 30
+				});
 				return {
 					id: potentialUser.id,
 					name: potentialUser.name,
@@ -50,6 +56,12 @@ export function setupAccountRoutes() {
 	server.post("/accounts/logout", (_, res) => {
 		res.setCookie("token", "", { path: "/", httpOnly: true, sameSite: "lax", maxAge: 0 });
 		res.setCookie("account_id", "", { path: "/", httpOnly: true, sameSite: "lax", maxAge: 0 });
+		res.setCookie("authed", "", {
+			path: "/",
+			httpOnly: false,
+			sameSite: "lax",
+			maxAge: 0
+		});
 		res.status(204).send();
 	});
 
@@ -80,6 +92,12 @@ export function setupAccountRoutes() {
 		res.setCookie("token", key, {
 			path: "/",
 			httpOnly: true,
+			sameSite: "lax",
+			maxAge: 60 * 60 * 24 * 30
+		});
+		res.setCookie("authed", "1", {
+			path: "/",
+			httpOnly: false,
 			sameSite: "lax",
 			maxAge: 60 * 60 * 24 * 30
 		});
