@@ -3,11 +3,7 @@ import { useForm } from "@mantine/form";
 import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
 import { useRef, useState } from "react";
 import { RestAPI } from "../utils/RestAPI";
-import {
-	closeModal,
-	openContextModal,
-	type ContextModalProps
-} from "@mantine/modals";
+import { closeModal, openContextModal, type ContextModalProps } from "@mantine/modals";
 import { lockModal, unlockModal } from "../utils/modals";
 import Spin from "./Spin";
 import { showErrorNotification } from "../utils/notify";
@@ -23,12 +19,7 @@ export default function RegistrationModal({ context, id }: ContextModalProps) {
 		},
 		validate: {
 			name: v => (v.length > 0 ? null : "Name is required"),
-			turnstile: v =>
-				window.TALLY_CLIENT_CONFIG.turnstileKey
-					? v.length > 0
-						? null
-						: "Make sure that you passed the CAPTCHA"
-					: null
+			turnstile: v => (window.TALLY_CLIENT_CONFIG.turnstileKey ? (v.length > 0 ? null : "Make sure that you passed the CAPTCHA") : null)
 		}
 	});
 
@@ -60,7 +51,8 @@ export default function RegistrationModal({ context, id }: ContextModalProps) {
 							closeOnEscape: false,
 							innerProps: {
 								accountID: req.body.accountID,
-								key: req.body.key
+								key: req.body.key,
+								name: body.name
 							}
 						});
 					}
@@ -75,27 +67,14 @@ export default function RegistrationModal({ context, id }: ContextModalProps) {
 					{...form.getInputProps("name")}
 				/>
 				{!!window.TALLY_CLIENT_CONFIG.turnstileKey && (
-					<Input.Wrapper
-						label="CAPTCHA"
-						withAsterisk
-						error={form.errors.turnstile}
-						mt="sm"
-					>
+					<Input.Wrapper label="CAPTCHA" withAsterisk error={form.errors.turnstile} mt="sm">
 						<Box pt={"xs"}>
 							<Turnstile
 								ref={turnstileRef}
-								siteKey={
-									window.TALLY_CLIENT_CONFIG.turnstileKey
-								}
-								onSuccess={token =>
-									form.setFieldValue("turnstile", token)
-								}
-								onExpire={() =>
-									form.setFieldValue("turnstile", "")
-								}
-								onError={() =>
-									form.setFieldValue("turnstile", "")
-								}
+								siteKey={window.TALLY_CLIENT_CONFIG.turnstileKey}
+								onSuccess={token => form.setFieldValue("turnstile", token)}
+								onExpire={() => form.setFieldValue("turnstile", "")}
+								onError={() => form.setFieldValue("turnstile", "")}
 							/>
 						</Box>
 					</Input.Wrapper>

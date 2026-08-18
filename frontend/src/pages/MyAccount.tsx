@@ -1,4 +1,4 @@
-import { Alert, Box, Button, Checkbox, Divider, Flex, Loader, Text, TextInput, Title } from "@mantine/core";
+import { Alert, Box, Button, Card, Checkbox, Divider, Flex, Loader, Text, TextInput, Title } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { RestAPI } from "../utils/RestAPI";
 import { showErrorNotification, showSuccessNotification } from "../utils/notify";
@@ -13,7 +13,6 @@ export default function MyAccount() {
 	const [, setLocation] = useLocation();
 	const account = useAccount();
 	const [id, setId] = useState<string | undefined>(undefined);
-	const [revealKey, setRevealKey] = useState(false);
 	const [allowTransfer, setAllowTransfer] = useState<boolean | undefined>(undefined);
 
 	useEffect(() => {
@@ -83,8 +82,6 @@ export default function MyAccount() {
 							</Button>
 						</Box>
 						<Divider />
-						<TextInput data-autofocus label="Secret key" type={revealKey ? "text" : "password"} value={account.key} readOnly={true} />
-						<Checkbox checked={revealKey} onChange={e => setRevealKey(e.currentTarget.checked)} label="Reveal key" />
 						<Box>
 							<Button
 								variant="light"
@@ -102,8 +99,6 @@ export default function MyAccount() {
 										async onConfirm() {
 											const req = await RestAPI.post("/accounts/rotate", {});
 											if (req.ok) {
-												setRevealKey(true);
-												account.logIn(account.accountID, req.body.key);
 												openConfirmModal({
 													title: "Key rotated",
 													labels: {
@@ -124,6 +119,12 @@ export default function MyAccount() {
 																Your secret key has been successfully rotated. All devices but this one have been
 																logged out.
 															</Text>
+															<Card>
+																<Text fw={500}>New secret key</Text>
+																<Text ff={"monospace"} style={{ wordBreak: "break-all" }}>
+																	{req.body.key}
+																</Text>
+															</Card>
 															<Alert
 																variant="light"
 																color="yellow"
@@ -186,13 +187,10 @@ export default function MyAccount() {
 										confirmProps: {
 											color: "red"
 										},
-										onConfirm() {
+										async onConfirm() {
+											await RestAPI.post("/accounts/logout", {});
 											account.logOut();
 											setLocation("/");
-											showSuccessNotification({
-												title: "Logged out",
-												message: "You have been logged out of your account."
-											});
 										}
 									});
 								}}

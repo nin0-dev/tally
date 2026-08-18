@@ -21,11 +21,7 @@ type RT = Promise<{
 }>;
 
 export const RestAPI = {
-	async _req(
-		method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE",
-		endpoint: Endpoint,
-		extra: Extra
-	): RT {
+	async _req(method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE", endpoint: Endpoint, extra: Extra): RT {
 		const extras: any = {
 			headers: {}
 		};
@@ -34,23 +30,16 @@ export const RestAPI = {
 				extras.headers[h] = v;
 			}
 		}
-		const account = useAccount.getState();
-		if (account.key) {
-			extras.headers["Authorization"] =
-				`${account.accountID}-${account.key}`;
-		}
 		if (extra.body && method !== "GET") {
 			extras.headers["Content-Type"] = "application/json";
 			extras.body = JSON.stringify(extra.body);
 		}
 		try {
-			const request = await fetch(
-				`${window.TALLY_CLIENT_CONFIG.apiBaseURL}${endpoint}`,
-				{
-					method,
-					...extras
-				}
-			);
+			const request = await fetch(`${window.TALLY_CLIENT_CONFIG.apiBaseURL}${endpoint}`, {
+				method,
+				credentials: "include",
+				...extras
+			});
 			const bodyContainer: any = {};
 			try {
 				bodyContainer.body = await request.json();
@@ -60,17 +49,15 @@ export const RestAPI = {
 
 			const ok = request.status < 300 && request.status > 199;
 			if (!ok) {
-				if (request.status === 401 && account.accountID) {
-					account.logOut();
+				if (request.status === 401) {
+					useAccount.getState().logOut();
 					navigate("/");
 				}
-				extra.errors[500] =
-					"Internal error. If you are the instance owner, check server logs";
+
+				extra.errors[500] = "Internal error. If you are the instance owner, check server logs";
 				extra.errors[400] = "Validation error";
 				extra.errors[401] = "Authentication error";
-				bodyContainer.error =
-					extra.errors[request.status] ??
-					`Unknown error ${request.status}`;
+				bodyContainer.error = extra.errors[request.status] ?? `Unknown error ${request.status}`;
 			}
 
 			return {

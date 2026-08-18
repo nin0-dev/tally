@@ -1,7 +1,7 @@
 import { Switch, Route, useRoute } from "wouter";
 import Home from "./pages/Home";
 
-import { AppShell, Container, MantineProvider } from "@mantine/core";
+import { AppShell, Container, Loader, MantineProvider } from "@mantine/core";
 import { useColorScheme } from "@mantine/hooks";
 import HeaderBar from "./components/HeaderBar";
 import { theme } from "./utils/theme";
@@ -16,11 +16,23 @@ import Dashboard from "./pages/Dashboard";
 import CreateDeckModal from "./components/CreateDeckModal";
 import RenameDeckModal from "./components/RenameDeckModal";
 import DeckHome from "./pages/DeckHome";
+import { useEffect, useState } from "react";
+import { RestAPI } from "./utils/RestAPI";
 
 export default function App() {
 	const colorScheme = useColorScheme();
 	const [isMain] = useRoute("/");
 	const account = useAccount();
+	const [loading, setLoading] = useState(true);
+	useEffect(() => {
+		(async () => {
+			const req = await RestAPI.get("/accounts", {});
+			if (req.ok) {
+				account.logIn(req.body.id, req.body.name);
+			}
+			setLoading(false);
+		})();
+	}, []);
 
 	return (
 		<>
@@ -41,7 +53,7 @@ export default function App() {
 						</AppShell.Header>
 						<AppShell.Main
 							style={
-								isMain && !account.key
+								isMain && !account.accountID
 									? {
 											display: "flex",
 											alignItems: "center",
@@ -51,22 +63,15 @@ export default function App() {
 							}
 						>
 							<Container size={"xl"}>
-								<Switch>
-									<Route
-										path="/"
-										component={
-											!account.key ? Home : Dashboard
-										}
-									/>
-									<Route
-										path="/account"
-										component={MyAccount}
-									/>
-									<Route
-										path="/deck/:id"
-										component={DeckHome}
-									/>
-								</Switch>
+								{loading ? (
+									<Loader mt="lg" />
+								) : (
+									<Switch>
+										<Route path="/" component={!account.accountID ? Home : Dashboard} />
+										<Route path="/account" component={MyAccount} />
+										<Route path="/deck/:id" component={DeckHome} />
+									</Switch>
+								)}
 							</Container>
 						</AppShell.Main>
 					</AppShell>

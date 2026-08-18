@@ -1,18 +1,11 @@
 import { Anchor, Box, Button, Flex, Group, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import {
-	closeModal,
-	openContextModal,
-	type ContextModalProps
-} from "@mantine/modals";
+import { closeModal, openContextModal, type ContextModalProps } from "@mantine/modals";
 import { useState } from "react";
 import Spin from "./Spin";
 import { RestAPI } from "../utils/RestAPI";
 import { lockModal, showAlertModal, unlockModal } from "../utils/modals";
-import {
-	showErrorNotification,
-	showSuccessNotification
-} from "../utils/notify";
+import { showErrorNotification, showSuccessNotification } from "../utils/notify";
 import { useAccount } from "../stores/account";
 
 export default function LoginModal({ context, id }: ContextModalProps) {
@@ -35,9 +28,10 @@ export default function LoginModal({ context, id }: ContextModalProps) {
 			<form
 				onSubmit={form.onSubmit(async body => {
 					lockModal(id, context, setSpin);
-					const req = await RestAPI.get("/accounts", {
-						headers: {
-							Authorization: `${body.accountID}-${body.secretKey}`
+					const req = await RestAPI.post("/accounts/login", {
+						body: {
+							accountID: body.accountID,
+							key: body.secretKey
 						},
 						errors: {
 							401: "Invalid account ID/key"
@@ -45,9 +39,7 @@ export default function LoginModal({ context, id }: ContextModalProps) {
 					});
 					if (req.ok) {
 						closeModal(id);
-						useAccount
-							.getState()
-							.logIn(body.accountID, body.secretKey);
+						useAccount.getState().logIn(body.accountID, req.body.name);
 						showSuccessNotification({
 							title: "Logged in",
 							message: `Welcome back, ${req.body.name}!`
@@ -62,13 +54,7 @@ export default function LoginModal({ context, id }: ContextModalProps) {
 				})}
 			>
 				<Flex direction="column" gap="xs">
-					<TextInput
-						withAsterisk
-						data-autofocus
-						label="Account ID"
-						key={form.key("accountID")}
-						{...form.getInputProps("accountID")}
-					/>
+					<TextInput withAsterisk data-autofocus label="Account ID" key={form.key("accountID")} {...form.getInputProps("accountID")} />
 					<TextInput
 						withAsterisk
 						data-autofocus
@@ -84,28 +70,15 @@ export default function LoginModal({ context, id }: ContextModalProps) {
 											title: "Forgot key?",
 											children: (
 												<>
-													Tally does not save your
-													email, or any other
-													identifying information.
-													Without your account ID and
-													key, you cannot recover your
-													account, and will have to
-													make a new one.
+													Tally does not save your email, or any other identifying information. Without your account ID and
+													key, you cannot recover your account, and will have to make a new one.
 													<br />
-													The instance operator also
-													cannot help you recover your
-													account by contacting them,
-													as there is no way to
-													validate that you are who
-													you claim to be.
+													The instance operator also cannot help you recover your account by contacting them, as there is no
+													way to validate that you are who you claim to be.
 													<br />
 													<br />
-													At registration time, you
-													downloaded your account info
-													in a file named
-													"tally-login-[account_id].txt",
-													you can try finding that
-													file.
+													At registration time, you downloaded your account info in a file named
+													"tally-login-[account_id].txt", you can try finding that file.
 												</>
 											)
 										})

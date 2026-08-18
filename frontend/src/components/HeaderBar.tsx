@@ -24,7 +24,7 @@ export default function HeaderBar() {
 				Tally
 			</Title>
 
-			{!account.key ? (
+			{!account.accountID ? (
 				<>
 					<Button
 						style={{ marginLeft: "auto" }}
