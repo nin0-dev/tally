@@ -4,12 +4,9 @@ import { setupAccountRoutes } from "./routes/accounts.js";
 import { setupDeckRoutes } from "./routes/decks.js";
 import { setupPlayRoutes } from "./routes/plays.js";
 import cors from "@fastify/cors";
+import cookie from "@fastify/cookie";
 import { runMigrations } from "./utils/db.js";
-import {
-	NotFoundError,
-	UnauthorizedError,
-	ValidationError
-} from "./utils/errors.js";
+import { NotFoundError, UnauthorizedError, ValidationError } from "./utils/errors.js";
 import { ZodError } from "zod";
 
 export const loggerInstance = new Logger();
@@ -18,14 +15,11 @@ export const server = Fastify({
 	loggerInstance
 });
 
+server.register(cookie);
+
 server.setErrorHandler(async (err, _, res) => {
 	if (err instanceof UnauthorizedError) {
-		await new Promise(resolve =>
-			setTimeout(
-				resolve,
-				Math.floor(Math.random() * (1500 - 500 + 1)) + 500
-			)
-		);
+		await new Promise(resolve => setTimeout(resolve, Math.floor(Math.random() * (1500 - 500 + 1)) + 500));
 		return res.status(401).send();
 	} else if (err instanceof ValidationError || err instanceof ZodError) {
 		return res.status(400).send();

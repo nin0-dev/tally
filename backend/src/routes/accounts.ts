@@ -13,11 +13,7 @@ export function setupAccountRoutes() {
 		const u = await getUserIDForRequest(req);
 		if (!u) throw new UnauthorizedError();
 
-		const user = await db
-			.selectFrom("users")
-			.select(["name", "id", "allow_transfer"])
-			.where("id", "=", u)
-			.executeTakeFirstOrThrow();
+		const user = await db.selectFrom("users").select(["name", "id", "allow_transfer"]).where("id", "=", u).executeTakeFirstOrThrow();
 
 		// @ts-ignore
 		user.allow_transfer = !!user.allow_transfer;
@@ -37,28 +33,22 @@ export function setupAccountRoutes() {
 			.where("id", "=", u)
 			.execute();
 
-		return { key };
+		res.setCookie("token", key, {
+			path: "/",
+			httpOnly: true,
+			sameSite: "lax",
+			maxAge: 60 * 60 * 24 * 30
+		});
+		res.status(204).send();
 	});
 
 	server.get("/accounts/export", async (req, res) => {
 		const u = await getUserIDForRequest(req);
 		if (!u) throw new UnauthorizedError();
 
-		const user = await db
-			.selectFrom("users")
-			.select(["id", "name"])
-			.where("id", "=", u)
-			.executeTakeFirstOrThrow();
-		const decks = await db
-			.selectFrom("decks")
-			.select(["id", "name", "content"])
-			.where("owner", "=", u)
-			.execute();
-		const plays = await db
-			.selectFrom("plays")
-			.select(["deck", "last_played", "questions"])
-			.where("user", "=", u)
-			.execute();
+		const user = await db.selectFrom("users").select(["id", "name"]).where("id", "=", u).executeTakeFirstOrThrow();
+		const decks = await db.selectFrom("decks").select(["id", "name", "content"]).where("owner", "=", u).execute();
+		const plays = await db.selectFrom("plays").select(["deck", "last_played", "questions"]).where("user", "=", u).execute();
 
 		return { user, decks, plays };
 	});
@@ -78,7 +68,15 @@ export function setupAccountRoutes() {
 			})
 			.execute();
 
-		return { accountID, key };
+		res.setCookie("token", key, {
+			path: "/",
+			httpOnly: true,
+			sameSite: "lax",
+			maxAge: 60 * 60 * 24 * 30
+		});
+		res.status(204).send();
+
+		return { accountID };
 	});
 
 	server.delete("/accounts", async (req, res) => {
@@ -111,15 +109,10 @@ export function setupAccountRoutes() {
 			if (!name?.trim().length) throw new ValidationError();
 			pendingUpdates.name = name.trim();
 		}
-		if (allow_transfer !== undefined)
-			pendingUpdates.allow_transfer = Number(allow_transfer);
+		if (allow_transfer !== undefined) pendingUpdates.allow_transfer = Number(allow_transfer);
 
 		if (Object.keys(pendingUpdates).length > 0) {
-			await db
-				.updateTable("users")
-				.set(pendingUpdates)
-				.where("id", "=", u)
-				.execute();
+			await db.updateTable("users").set(pendingUpdates).where("id", "=", u).execute();
 		}
 
 		res.code(204).send();

@@ -1,5 +1,6 @@
 {
 	"dependencies": {
+		"@fastify/cookie": "^11.1.2",
 		"@fastify/cors": "^11.2.0",
 		"argon2": "^0.44.0",
 		"better-sqlite3": "^12.10.0",
