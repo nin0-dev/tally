@@ -82,6 +82,7 @@ export default function MyAccount() {
 							</Button>
 						</Box>
 						<Divider />
+						<Text>If you have lost your key, you can get a new key by rotating it. This will log out all devices but this one.</Text>
 						<Box>
 							<Button
 								variant="light"
