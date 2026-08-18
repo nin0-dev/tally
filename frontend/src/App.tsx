@@ -26,9 +26,11 @@ export default function App() {
 	const [loading, setLoading] = useState(true);
 	useEffect(() => {
 		(async () => {
+			if (!document.cookie.includes("authed=1")) return void setLoading(false);
+
 			const req = await RestAPI.get("/accounts", {});
 			if (req.ok) {
-				account.logIn(req.body.id, req.body.name);
+				useAccount.getState().logIn(req.body.id, req.body.name);
 			}
 			setLoading(false);
 		})();
