@@ -83,7 +83,9 @@ export function setupAccountRoutes() {
 			sameSite: "lax",
 			maxAge: 60 * 60 * 24 * 30
 		});
-		res.status(204).send();
+		return {
+			key
+		};
 	});
 
 	server.get("/accounts/export", async (req, res) => {
