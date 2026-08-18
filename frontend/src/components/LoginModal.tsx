@@ -79,6 +79,8 @@ export default function LoginModal({ context, id }: ContextModalProps) {
 													<br />
 													At registration time, you downloaded your account info in a file named
 													"tally-login-[account_id].txt", you can try finding that file.
+													<br />
+													If you still have access to a logged-in device, you can get a new key from account settings.
 												</>
 											)
 										})
