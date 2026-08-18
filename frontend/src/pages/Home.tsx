@@ -2,15 +2,7 @@ import { Box, Divider, Grid, Text, Title } from "@mantine/core";
 import Flashcard from "../components/Flashcard";
 import HomepageHeader from "../components/HomepageHeader";
 
-function SellingPoint({
-	main,
-	desc,
-	subtext
-}: {
-	main: string;
-	desc: string;
-	subtext: string;
-}) {
+function SellingPoint({ main, desc, subtext }: { main: string; desc: string; subtext: string }) {
 	return (
 		<Flashcard
 			style={{ height: "100%" }}
@@ -85,16 +77,14 @@ export default function Home() {
 					color: "var(--mantine-color-dimmed)"
 				}}
 			>
-				Not enough? Signing up is a quick process and will allow you to
-				make a flashcard deck to see Tally in action, and determine if
-				this is the right tool for you.
+				Not enough? Signing up is a quick process and will allow you to make a flashcard deck to see Tally in action, and determine if this is
+				the right tool for you.
 				<br />
 				<br />
-				Accounts are only used to sync your decks across devices,
-				absolutely no personal information is collected.
+				Accounts are only used to sync your decks across devices, absolutely no personal information is collected.
 				<br />
-				Tally is also{" "}
-				<a href="https://git.nin0.dev/nin0/tally">open-source</a>.
+				Tally is also <a href="https://git.nin0.dev/nin0/tally">open-source</a> and licensed under the{" "}
+				<a href="https://git.nin0.dev/nin0/Tally/src/branch/main/LICENSE">AGPLv3</a>.
 			</Text>
 		</Box>
 	);

@@ -5,12 +5,7 @@ import { useMobile } from "../utils/useMobile";
 
 export default function HomepageHeader() {
 	return (
-		<Flex
-			direction="column"
-			gap="sm"
-			align="center"
-			style={{ marginBottom: "var(--mantine-spacing-sm)" }}
-		>
+		<Flex direction="column" gap="sm" align="center" style={{ marginBottom: "var(--mantine-spacing-sm)" }}>
 			<Text
 				fw={700}
 				style={{
@@ -20,7 +15,7 @@ export default function HomepageHeader() {
 					fontFamily: "Space Grotesk, sans-serif"
 				}}
 			>
-				The simple, yet powerful, flashcard utility
+				A simple, yet powerful, flashcard utility
 			</Text>
 			<Button
 				size="lg"
