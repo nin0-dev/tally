@@ -1,4 +1,4 @@
-import { hash } from "argon2";
+import { hash, verify } from "argon2";
 import { server } from "../index.js";
 import { getUserIDForRequest } from "../utils/auth.js";
 import { db } from "../utils/db.js";
@@ -9,6 +9,50 @@ import { validateTurnstile } from "../utils/turnstile.js";
 import { UnauthorizedError, ValidationError } from "../utils/errors.js";
 
 export function setupAccountRoutes() {
+	server.post("/accounts/login", async (req, res) => {
+		const { accountID, key } = z
+			.object({
+				accountID: z.string(),
+				key: z.string()
+			})
+			.parse(req.body);
+
+		try {
+			const potentialUser = await db
+				.selectFrom("users")
+				.select(["id", "name", "pass", "allow_transfer"])
+				.where("id", "=", accountID)
+				.executeTakeFirstOrThrow();
+			if (await verify(potentialUser.pass, key)) {
+				res.setCookie("account_id", accountID, {
+					path: "/",
+					httpOnly: true,
+					sameSite: "lax",
+					maxAge: 60 * 60 * 24 * 30
+				});
+				res.setCookie("token", key, {
+					path: "/",
+					httpOnly: true,
+					sameSite: "lax",
+					maxAge: 60 * 60 * 24 * 30
+				});
+				return {
+					id: potentialUser.id,
+					name: potentialUser.name,
+					allow_transfer: !!potentialUser.allow_transfer
+				};
+			} else throw new UnauthorizedError();
+		} catch {
+			throw new UnauthorizedError();
+		}
+	});
+
+	server.post("/accounts/logout", (_, res) => {
+		res.setCookie("token", "", { path: "/", httpOnly: true, sameSite: "lax", maxAge: 0 });
+		res.setCookie("account_id", "", { path: "/", httpOnly: true, sameSite: "lax", maxAge: 0 });
+		res.status(204).send();
+	});
+
 	server.get("/accounts", async (req, res) => {
 		const u = await getUserIDForRequest(req);
 		if (!u) throw new UnauthorizedError();
@@ -68,15 +112,20 @@ export function setupAccountRoutes() {
 			})
 			.execute();
 
+		res.setCookie("account_id", accountID, {
+			path: "/",
+			httpOnly: true,
+			sameSite: "lax",
+			maxAge: 60 * 60 * 24 * 30
+		});
 		res.setCookie("token", key, {
 			path: "/",
 			httpOnly: true,
 			sameSite: "lax",
 			maxAge: 60 * 60 * 24 * 30
 		});
-		res.status(204).send();
 
-		return { accountID };
+		return { accountID, key };
 	});
 
 	server.delete("/accounts", async (req, res) => {
