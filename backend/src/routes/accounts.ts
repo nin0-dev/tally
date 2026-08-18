@@ -144,6 +144,12 @@ export function setupAccountRoutes() {
 			sameSite: "lax",
 			maxAge: 60 * 60 * 24 * 30
 		});
+		res.setCookie("authed", "1", {
+			path: "/",
+			httpOnly: false,
+			sameSite: "lax",
+			maxAge: 60 * 60 * 24 * 30
+		});
 
 		return { accountID, key };
 	});
