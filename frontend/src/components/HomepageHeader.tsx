@@ -1,7 +1,5 @@
 import { Button, Flex, Text } from "@mantine/core";
-import { useMediaQuery } from "@mantine/hooks";
 import { modals } from "@mantine/modals";
-import { useMobile } from "../utils/useMobile";
 
 export default function HomepageHeader() {
 	return (
