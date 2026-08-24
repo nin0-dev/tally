@@ -18,6 +18,7 @@ import RenameDeckModal from "./components/RenameDeckModal";
 import DeckHome from "./pages/DeckHome";
 import { useEffect, useState } from "react";
 import { RestAPI } from "./utils/RestAPI";
+import ManageAccessModal from "./components/ManageAccessModal";
 
 export default function App() {
 	const colorScheme = useColorScheme();
@@ -46,7 +47,8 @@ export default function App() {
 						confirmRegister: ConfirmedRegModal,
 						login: LoginModal,
 						createDeck: CreateDeckModal,
-						renameDeck: RenameDeckModal
+						renameDeck: RenameDeckModal,
+						manageAccess: ManageAccessModal
 					}}
 				>
 					<AppShell padding="lg" header={{ height: 60 }}>
