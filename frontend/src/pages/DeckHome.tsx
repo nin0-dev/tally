@@ -65,7 +65,25 @@ export default function DeckHome({ params: { id } }: { params: { id: string } })
 									<Menu.Dropdown>
 										{!isDeckOwnedByYou && (
 											<>
-												<Menu.Item leftSection={<UserGearIcon size={14} />}>Owner information</Menu.Item>
+												<Menu.Item
+													leftSection={<UserGearIcon size={14} />}
+													onClick={() =>
+														showAlertModal({
+															title: "Owner information",
+															children: (
+																<Text>
+																	The user <strong>{deck.owner.name}</strong> (ID{" "}
+																	<Text span ff="monospace" size="0.8rem">
+																		{deck.owner.id}
+																	</Text>
+																	) owns this deck, and can edit/delete it at any time.
+																</Text>
+															)
+														})
+													}
+												>
+													Owner information
+												</Menu.Item>
 												<Menu.Divider />
 											</>
 										)}
