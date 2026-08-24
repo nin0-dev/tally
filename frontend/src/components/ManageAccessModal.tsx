@@ -1,4 +1,4 @@
-import { Alert, Box, Button, Flex, Group, Radio, RadioGroup, Switch } from "@mantine/core";
+import { Alert, Box, Button, Group, Switch } from "@mantine/core";
 import { closeModal, type ContextModalProps } from "@mantine/modals";
 import { InfoIcon } from "@phosphor-icons/react";
 import { useDecks } from "../stores/decks";
