@@ -9,17 +9,17 @@ import { showErrorNotification } from "../utils/notify";
 import { useDecks } from "../stores/decks";
 
 export default function RenameDeckModal({ context, id, innerProps }: ContextModalProps<{ deckID: string }>) {
+	const decks = useDecks();
 	const form = useForm({
 		mode: "controlled",
 		initialValues: {
-			name: ""
+			name: decks.decks[innerProps.deckID].name
 		},
 		validate: {
 			name: v => (v.length > 0 ? null : "Name is required")
 		}
 	});
 	const [spin, setSpin] = useState(false);
-	const decks = useDecks();
 
 	return (
 		<Box pos="relative">
