@@ -2,7 +2,17 @@ import { ActionIcon, Alert, Badge, Box, Button, Flex, Group, Loader, Menu, Text,
 import { useDecks } from "../stores/decks";
 import { useAccount } from "../stores/account";
 import { useEffect } from "react";
-import { ArrowBendUpRightIcon, CopyIcon, InfoIcon, LinkIcon, PencilIcon, TrashIcon, UsersIcon, WarningCircleIcon } from "@phosphor-icons/react";
+import {
+	ArrowBendUpRightIcon,
+	CopyIcon,
+	InfoIcon,
+	LinkIcon,
+	PencilIcon,
+	TrashIcon,
+	UserGearIcon,
+	UsersIcon,
+	WarningCircleIcon
+} from "@phosphor-icons/react";
 import { showSuccessNotification } from "../utils/notify";
 import { showAlertModal } from "../utils/modals";
 import { openContextModal } from "@mantine/modals";
@@ -48,93 +58,85 @@ export default function DeckHome({ params: { id } }: { params: { id: string } })
 								) : (
 									<></>
 								)}
-								{isDeckOwnedByYou ? (
-									<Menu shadow="md" width={200}>
-										<Menu.Target>
-											<Button variant="default">Manage deck</Button>
-										</Menu.Target>
-										<Menu.Dropdown>
-											<Menu.Item
-												leftSection={<LinkIcon size={14} />}
-												onClick={() => {
-													navigator.clipboard.writeText(window.location.href).then(() =>
-														showSuccessNotification({
-															title: "Success",
-															message: "Link copied to clipboard"
+								<Menu shadow="md" width={200}>
+									<Menu.Target>
+										<Button variant="default">Manage deck</Button>
+									</Menu.Target>
+									<Menu.Dropdown>
+										{!isDeckOwnedByYou && (
+											<>
+												<Menu.Item leftSection={<UserGearIcon size={14} />}>Owner information</Menu.Item>
+												<Menu.Divider />
+											</>
+										)}
+										<Menu.Item
+											leftSection={<LinkIcon size={14} />}
+											onClick={() => {
+												navigator.clipboard.writeText(window.location.href).then(() =>
+													showSuccessNotification({
+														title: "Success",
+														message: "Link copied to clipboard"
+													})
+												);
+												if (!deck.shared) {
+													showAlertModal({
+														title: "Deck not shared",
+														children: (
+															<>
+																This deck is not marked as shared, therefore you will need to be logged in to your
+																account to use this link. To share the deck to the public, use the{" "}
+																<b>Manage access</b> option.
+															</>
+														)
+													});
+												}
+											}}
+										>
+											Copy link
+										</Menu.Item>
+										{isDeckOwnedByYou ? (
+											<>
+												<Menu.Divider />
+
+												<Menu.Item
+													leftSection={<PencilIcon size={14} />}
+													onClick={() =>
+														openContextModal({
+															modal: "renameDeck",
+															title: "Rename deck",
+															innerProps: { deckID: id }
 														})
-													);
-													if (!deck.shared) {
-														showAlertModal({
-															title: "Deck not shared",
-															children: (
-																<>
-																	This deck is not marked as shared, therefore you will need to be logged in to your
-																	account to use this link. To share the deck to the public, use the{" "}
-																	<b>Manage access</b> option.
-																</>
-															)
-														});
 													}
-												}}
-											>
-												Copy link
-											</Menu.Item>
-											<Menu.Divider />
-											<Menu.Item
-												leftSection={<PencilIcon size={14} />}
-												onClick={() =>
-													openContextModal({
-														modal: "renameDeck",
-														title: "Rename deck",
-														innerProps: { deckID: id }
-													})
-												}
-											>
-												Rename deck
-											</Menu.Item>
-											<Menu.Item
-												leftSection={<UsersIcon size={14} />}
-												onClick={() =>
-													openContextModal({
-														modal: "manageAccess",
-														title: "Manage access",
-														innerProps: { deckID: id }
-													})
-												}
-											>
-												Manage access
-											</Menu.Item>
-											<Menu.Divider />
-											<Menu.Item color="red" leftSection={<ArrowBendUpRightIcon size={14} />}>
-												Transfer ownership
-											</Menu.Item>
-											<Menu.Item color="red" leftSection={<TrashIcon size={14} />}>
-												Delete deck
-											</Menu.Item>
-										</Menu.Dropdown>
-									</Menu>
-								) : (
-									<ActionIcon variant="default" disabled={!currentUser.accountID}>
-										<CopyIcon weight="fill" />
-									</ActionIcon>
-								)}
+												>
+													Rename deck
+												</Menu.Item>
+												<Menu.Item
+													leftSection={<UsersIcon size={14} />}
+													onClick={() =>
+														openContextModal({
+															modal: "manageAccess",
+															title: "Manage access",
+															innerProps: { deckID: id }
+														})
+													}
+												>
+													Manage access
+												</Menu.Item>
+												<Menu.Divider />
+												<Menu.Item color="red" leftSection={<ArrowBendUpRightIcon size={14} />}>
+													Transfer ownership
+												</Menu.Item>
+												<Menu.Item color="red" leftSection={<TrashIcon size={14} />}>
+													Delete deck
+												</Menu.Item>
+											</>
+										) : (
+											<>{currentUser.accountID && <Menu.Item leftSection={<CopyIcon size={14} />}>Make a copy</Menu.Item>}</>
+										)}
+									</Menu.Dropdown>
+								</Menu>
 							</Group>
 						</Flex>
-						<Box>
-							Owned by{" "}
-							<Text span fw={600}>
-								{isDeckOwnedByYou ? (
-									"you"
-								) : (
-									<>
-										{deck.owner.name}{" "}
-										<Text span ff="monospace" size="0.8rem">
-											({deck.owner.id})
-										</Text>
-									</>
-								)}
-							</Text>
-						</Box>
 					</Flex>
 				</Box>
 			)}
