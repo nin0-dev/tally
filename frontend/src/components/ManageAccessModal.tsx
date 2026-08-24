@@ -22,6 +22,9 @@ export default function ManageAccessModal({ context, id, innerProps }: ContextMo
 					account their history can be tracked and they can duplicate the deck in their own library.
 					<br />
 					You can stop sharing a deck at any time, however this will not delete copies of it.
+					<br />
+					<br />
+					Other users will be able to see your account name and ID if they open the deck, but will not see a list of your other decks.
 				</Alert>
 				<Group w="100%">
 					<Switch label="Share this deck" checked={shared} onChange={e => setShared(!!e.currentTarget.checked)} />
