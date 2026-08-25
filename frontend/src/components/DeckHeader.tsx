@@ -4,7 +4,7 @@ import { ArrowBendUpRightIcon, CopyIcon, LinkIcon, PencilIcon, TrashIcon, UserGe
 import { showSuccessNotification } from "../utils/notify";
 import { showAlertModal } from "../utils/modals";
 
-export default function DeckHeader({ deck, isDeckOwnedByYou }) {
+export default function DeckHeader({ deck, isDeckOwnedByYou, authed }) {
 	return (
 		<Flex gap="sm" direction={{ base: "column", sm: "row" }}>
 			<Title order={1}>{deck.name}</Title>
@@ -66,7 +66,7 @@ export default function DeckHeader({ deck, isDeckOwnedByYou }) {
 						>
 							Copy link
 						</Menu.Item>
-						<Menu.Item leftSection={<CopyIcon size={14} />}>Make a copy</Menu.Item>
+						{authed && <Menu.Item leftSection={<CopyIcon size={14} />}>Make a copy</Menu.Item>}
 						{isDeckOwnedByYou && (
 							<>
 								<Menu.Divider />

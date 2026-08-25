@@ -36,7 +36,7 @@ export default function DeckHome({ params: { id } }: { params: { id: string } })
 								or register. This only takes a few seconds, and does not require you to share anything about you!
 							</Alert>
 						)}
-						<DeckHeader deck={deck} isDeckOwnedByYou={isDeckOwnedByYou} />
+						<DeckHeader deck={deck} isDeckOwnedByYou={isDeckOwnedByYou} authed={currentUser.accountID} />
 					</Flex>
 				</Box>
 			)}
