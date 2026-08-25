@@ -33,12 +33,12 @@ export const server = Fastify({
 	trustProxy: allowedIPs
 });
 
-server.register(fastifyRateLimit, {
+await server.register(fastifyRateLimit, {
 	max: 100,
 	timeWindow: "1 minute"
 });
 
-server.register(cookie);
+await server.register(cookie);
 
 server.setErrorHandler(async (err, _, res) => {
 	if (err instanceof UnauthorizedError) {
@@ -48,13 +48,15 @@ server.setErrorHandler(async (err, _, res) => {
 		return res.status(400).send();
 	} else if (err instanceof NotFoundError) {
 		return res.status(404).send();
+	} else if ((err as any).statusCode === 429) {
+		return res.status(429).send();
 	} else {
 		loggerInstance.error(err);
 		return res.status(500).send();
 	}
 });
 
-server.register(cors, {
+await server.register(cors, {
 	origin: [(process.env.ALLOWED_CLIENT_ORIGINS ?? "").trim().split(",")],
 	methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
 	credentials: true
