@@ -20,6 +20,7 @@ import { useEffect, useState } from "react";
 import { RestAPI } from "./utils/RestAPI";
 import ManageAccessModal from "./components/ManageAccessModal";
 import TransferOwnershipModal from "./components/TransferOwnershipModal";
+import DeleteDeckModal from "./components/DeleteDeckModal";
 
 export default function App() {
 	const colorScheme = useColorScheme();
@@ -50,7 +51,8 @@ export default function App() {
 						createDeck: CreateDeckModal,
 						renameDeck: RenameDeckModal,
 						manageAccess: ManageAccessModal,
-						transferOwnership: TransferOwnershipModal
+						transferOwnership: TransferOwnershipModal,
+						deleteDeck: DeleteDeckModal
 					}}
 				>
 					<AppShell padding="lg" header={{ height: 60 }}>

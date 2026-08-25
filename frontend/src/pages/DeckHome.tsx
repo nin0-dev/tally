@@ -166,7 +166,17 @@ export default function DeckHome({ params: { id } }: { params: { id: string } })
 												>
 													Transfer ownership
 												</Menu.Item>
-												<Menu.Item color="red" leftSection={<TrashIcon size={14} />}>
+												<Menu.Item
+													color="red"
+													leftSection={<TrashIcon size={14} />}
+													onClick={() =>
+														openContextModal({
+															modal: "deleteDeck",
+															title: "Delete deck",
+															innerProps: { deckID: id }
+														})
+													}
+												>
 													Delete deck
 												</Menu.Item>
 											</>
