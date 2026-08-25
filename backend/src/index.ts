@@ -14,12 +14,16 @@ export const loggerInstance = new Logger();
 
 let allowedIPs = process.env.TRUSTED_PROXIES?.split(",").map(a => a.trim()) ?? [];
 if (allowedIPs.includes("cf")) {
-	const req = await fetch("https://api.cloudflare.com/client/v4/ips");
-	if (req.ok) {
-		const res = await req.json();
-		if (res.success) {
-			allowedIPs.push(...res.result.ipv4_cidrs, ...res.result.ipv6_cidrs);
-		}
+	try {
+		const req = await fetch("https://api.cloudflare.com/client/v4/ips");
+		if (req.ok) {
+			const res = await req.json();
+			if (res.success) {
+				allowedIPs.push(...res.result.ipv4_cidrs, ...res.result.ipv6_cidrs);
+			} else throw new Error();
+		} else throw new Error();
+	} catch {
+		loggerInstance.warn("Could not get Cloudflare IPs for trusted proxies");
 	}
 	allowedIPs = allowedIPs.filter(c => c !== "cf");
 }
