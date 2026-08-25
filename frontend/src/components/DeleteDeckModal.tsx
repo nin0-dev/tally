@@ -30,7 +30,8 @@ export default function DeleteDeckModal({ context, id, innerProps }: ContextModa
 			<Group gap="md">
 				<Alert color="red" variant="light" icon={<WarningIcon size={32} weight="fill" />} title="About deck deletion">
 					<Text size="sm">
-						Deck deletion deletes its play history for all users having played it. It does not delete duplicates made of this deck.
+						Deck deletion permanently deletes the deck itself and its play history for all users having played it. It does not delete
+						duplicates made of this deck.
 					</Text>
 				</Alert>
 				<Text>
