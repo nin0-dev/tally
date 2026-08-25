@@ -1,11 +1,7 @@
 import { server } from "../index.js";
 import { getUserIDForRequest } from "../utils/auth.js";
 import { db } from "../utils/db.js";
-import {
-	NotFoundError,
-	UnauthorizedError,
-	ValidationError
-} from "../utils/errors.js";
+import { NotFoundError, UnauthorizedError, ValidationError } from "../utils/errors.js";
 import { Deck, Question, TBCDeck } from "../utils/types.js";
 import { generateID, validateDeckID } from "../utils/utils.js";
 import z from "zod";
@@ -14,9 +10,7 @@ function calculatePriority(history?: string) {
 	const baseScore = (() => {
 		if (!history) return 100;
 
-		const [last = null, prev = null, prev2 = null] = history
-			.split("")
-			.toReversed();
+		const [last = null, prev = null, prev2 = null] = history.split("").toReversed();
 
 		if ([last, prev, prev2].every(t => t === "F")) return 300; // last 3 attempts were a fail
 		if ([last, prev].every(t => t === "F")) return 250; // last 2 attempts were a fail
@@ -29,13 +23,7 @@ function calculatePriority(history?: string) {
 			else break;
 		}
 
-		return (
-			100 -
-			pastRight * 50 +
-			(["F", "U"].includes(prev ?? "")
-				? 30
-				: 0) /* if the prev-last attempt was a failure, penalise by 30 */
-		);
+		return 100 - pastRight * 50 + (["F", "U"].includes(prev ?? "") ? 30 : 0); /* if the prev-last attempt was a failure, penalise by 30 */
 	})();
 	return baseScore + Math.random() * 10;
 }
@@ -46,28 +34,17 @@ export function setupDeckRoutes() {
 		const deckID = validateDeckID(req);
 
 		try {
-			const deck = await db
-				.selectFrom("decks")
-				.select(["content", "shared", "owner"])
-				.where("id", "=", deckID)
-				.executeTakeFirstOrThrow();
+			const deck = await db.selectFrom("decks").select(["content", "shared", "owner"]).where("id", "=", deckID).executeTakeFirstOrThrow();
 			if (!deck.shared && u !== deck.owner) throw new NotFoundError();
 
-			var deckQuestions = z
-				.array(Question)
-				.parse(JSON.parse(deck.content ?? "[]"));
+			var deckQuestions = z.array(Question).parse(JSON.parse(deck.content ?? "[]"));
 		} catch {
 			throw new NotFoundError();
 		}
 
 		let history: Record<string, string> = {};
 		if (u) {
-			const playData = await db
-				.selectFrom("plays")
-				.select("questions")
-				.where("user", "=", u)
-				.where("deck", "=", deckID)
-				.executeTakeFirst();
+			const playData = await db.selectFrom("plays").select("questions").where("user", "=", u).where("deck", "=", deckID).executeTakeFirst();
 
 			if (playData?.questions) {
 				history = JSON.parse(playData.questions);
@@ -90,11 +67,7 @@ export function setupDeckRoutes() {
 		if (id === "@me") {
 			if (!u) throw new UnauthorizedError();
 
-			const ownedDecks = await db
-				.selectFrom("decks")
-				.select(["name", "id", "content"])
-				.where("owner", "=", u)
-				.execute();
+			const ownedDecks = await db.selectFrom("decks").select(["name", "id", "content"]).where("owner", "=", u).execute();
 
 			return {
 				ownedDecks: ownedDecks.map(deck => ({
@@ -116,14 +89,7 @@ export function setupDeckRoutes() {
 				deck = await db
 					.selectFrom("decks")
 					.innerJoin("users", "users.id", "decks.owner")
-					.select([
-						"decks.id",
-						"decks.name",
-						"decks.owner",
-						"decks.content",
-						"decks.shared",
-						"users.name as owner_name"
-					])
+					.select(["decks.id", "decks.name", "decks.owner", "decks.content", "decks.shared", "users.name as owner_name"])
 					.where("decks.id", "=", id)
 					.executeTakeFirstOrThrow();
 
@@ -164,6 +130,35 @@ export function setupDeckRoutes() {
 		return { id };
 	});
 
+	server.post("/deck/:id/copy", async (req, res) => {
+		const u = await getUserIDForRequest(req);
+		if (!u) throw new UnauthorizedError();
+
+		const id = validateDeckID(req);
+
+		try {
+			var deck = await db.selectFrom("decks").selectAll().where("id", "=", id).executeTakeFirstOrThrow();
+		} catch {
+			throw new NotFoundError();
+		}
+		if (!deck.shared && deck.owner !== u) throw new NotFoundError();
+
+		// @ts-ignore
+		const nq = JSON.parse(deck.content ?? "[]").map(q => ({ ...q, id: generateID(12) }));
+		const id2 = generateID(12);
+		await db
+			.insertInto("decks")
+			.values({
+				id: id2,
+				owner: u,
+				name: `Copy of ${deck.name}`,
+				content: JSON.stringify(nq)
+			})
+			.execute();
+
+		return { id: id2 };
+	});
+
 	server.put("/deck/:id", async (req, res) => {
 		const u = await getUserIDForRequest(req);
 		if (!u) throw new UnauthorizedError();
@@ -178,11 +173,7 @@ export function setupDeckRoutes() {
 		const id = validateDeckID(req);
 
 		try {
-			var deck = await db
-				.selectFrom("decks")
-				.selectAll()
-				.where("id", "=", id)
-				.executeTakeFirstOrThrow();
+			var deck = await db.selectFrom("decks").selectAll().where("id", "=", id).executeTakeFirstOrThrow();
 		} catch {
 			throw new NotFoundError();
 		}
@@ -196,11 +187,7 @@ export function setupDeckRoutes() {
 		} = {};
 		if (name) pendingUpdates.name = name;
 		if (owner) {
-			const resp = await db
-				.selectFrom("users")
-				.select("allow_transfer")
-				.where("id", "=", owner)
-				.executeTakeFirst();
+			const resp = await db.selectFrom("users").select("allow_transfer").where("id", "=", owner).executeTakeFirst();
 			if (!resp) throw new NotFoundError();
 			const { allow_transfer } = resp;
 			if (allow_transfer !== 1) return res.code(403).send();
@@ -214,16 +201,12 @@ export function setupDeckRoutes() {
 			pendingUpdates.owner = owner;
 		}
 		if (questions) {
-			const existingQuestions: z.infer<typeof Question>[] =
-				JSON.parse(deck.content ?? "[]") ?? [];
-			const allowedIDs = new Set(
-				existingQuestions.filter(t => t.id).map(t => t.id)
-			);
+			const existingQuestions: z.infer<typeof Question>[] = JSON.parse(deck.content ?? "[]") ?? [];
+			const allowedIDs = new Set(existingQuestions.filter(t => t.id).map(t => t.id));
 			const usedIDs = new Set();
 
 			const newQuestions = questions.map(q => {
-				const allowOldID =
-					q.id && allowedIDs.has(q.id) && !usedIDs.has(q.id);
+				const allowOldID = q.id && allowedIDs.has(q.id) && !usedIDs.has(q.id);
 				q.id = allowOldID ? q.id : generateID(12);
 				usedIDs.add(q.id);
 				return q;
@@ -235,20 +218,14 @@ export function setupDeckRoutes() {
 		}
 
 		if (Object.keys(pendingUpdates).length > 0) {
-			await db
-				.updateTable("decks")
-				.set(pendingUpdates)
-				.where("id", "=", id)
-				.execute();
+			await db.updateTable("decks").set(pendingUpdates).where("id", "=", id).execute();
 		}
 
 		return {
 			name: pendingUpdates.name ?? deck.name,
 			id: deck.id,
 			shared: typeof shared !== "undefined" ? shared : !!deck.shared,
-			questions: pendingUpdates.content
-				? JSON.parse(pendingUpdates.content)
-				: JSON.parse(deck.content ?? "[]")
+			questions: pendingUpdates.content ? JSON.parse(pendingUpdates.content) : JSON.parse(deck.content ?? "[]")
 		};
 	});
 
@@ -258,11 +235,7 @@ export function setupDeckRoutes() {
 		const id = validateDeckID(req);
 
 		try {
-			var deck = await db
-				.selectFrom("decks")
-				.select("owner")
-				.where("id", "=", id)
-				.executeTakeFirstOrThrow();
+			var deck = await db.selectFrom("decks").select("owner").where("id", "=", id).executeTakeFirstOrThrow();
 		} catch {
 			throw new NotFoundError();
 		}
