@@ -9,49 +9,60 @@ import { validateTurnstile } from "../utils/turnstile.js";
 import { UnauthorizedError, ValidationError } from "../utils/errors.js";
 
 export function setupAccountRoutes() {
-	server.post("/accounts/login", async (req, res) => {
-		const { accountID, key } = z
-			.object({
-				accountID: z.string(),
-				key: z.string()
-			})
-			.parse(req.body);
+	server.post(
+		"/accounts/login",
+		{
+			config: {
+				rateLimit: {
+					max: 5,
+					timeWindow: "1 minute"
+				}
+			}
+		},
+		async (req, res) => {
+			const { accountID, key } = z
+				.object({
+					accountID: z.string(),
+					key: z.string()
+				})
+				.parse(req.body);
 
-		try {
-			const potentialUser = await db
-				.selectFrom("users")
-				.select(["id", "name", "pass", "allow_transfer"])
-				.where("id", "=", accountID)
-				.executeTakeFirstOrThrow();
-			if (await verify(potentialUser.pass, key)) {
-				res.setCookie("account_id", accountID, {
-					path: "/",
-					httpOnly: true,
-					sameSite: "lax",
-					maxAge: 60 * 60 * 24 * 30
-				});
-				res.setCookie("token", key, {
-					path: "/",
-					httpOnly: true,
-					sameSite: "lax",
-					maxAge: 60 * 60 * 24 * 30
-				});
-				res.setCookie("authed", "1", {
-					path: "/",
-					httpOnly: false,
-					sameSite: "lax",
-					maxAge: 60 * 60 * 24 * 30
-				});
-				return {
-					id: potentialUser.id,
-					name: potentialUser.name,
-					allow_transfer: !!potentialUser.allow_transfer
-				};
-			} else throw new UnauthorizedError();
-		} catch {
-			throw new UnauthorizedError();
+			try {
+				const potentialUser = await db
+					.selectFrom("users")
+					.select(["id", "name", "pass", "allow_transfer"])
+					.where("id", "=", accountID)
+					.executeTakeFirstOrThrow();
+				if (await verify(potentialUser.pass, key)) {
+					res.setCookie("account_id", accountID, {
+						path: "/",
+						httpOnly: true,
+						sameSite: "lax",
+						maxAge: 60 * 60 * 24 * 30
+					});
+					res.setCookie("token", key, {
+						path: "/",
+						httpOnly: true,
+						sameSite: "lax",
+						maxAge: 60 * 60 * 24 * 30
+					});
+					res.setCookie("authed", "1", {
+						path: "/",
+						httpOnly: false,
+						sameSite: "lax",
+						maxAge: 60 * 60 * 24 * 30
+					});
+					return {
+						id: potentialUser.id,
+						name: potentialUser.name,
+						allow_transfer: !!potentialUser.allow_transfer
+					};
+				} else throw new UnauthorizedError();
+			} catch {
+				throw new UnauthorizedError();
+			}
 		}
-	});
+	);
 
 	server.post("/accounts/logout", (_, res) => {
 		res.setCookie("token", "", { path: "/", httpOnly: true, sameSite: "lax", maxAge: 0 });

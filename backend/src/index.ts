@@ -8,11 +8,30 @@ import cookie from "@fastify/cookie";
 import { runMigrations } from "./utils/db.js";
 import { NotFoundError, UnauthorizedError, ValidationError } from "./utils/errors.js";
 import { ZodError } from "zod";
+import fastifyRateLimit from "@fastify/rate-limit";
 
 export const loggerInstance = new Logger();
 
+let allowedIPs = process.env.TRUSTED_PROXIES?.split(",").map(a => a.trim()) ?? [];
+if (allowedIPs.includes("cf")) {
+	const req = await fetch("https://api.cloudflare.com/client/v4/ips");
+	if (req.ok) {
+		const res = await req.json();
+		if (res.success) {
+			allowedIPs.push(...res.result.ipv4_cidrs, ...res.result.ipv6_cidrs);
+		}
+	}
+	allowedIPs = allowedIPs.filter(c => c !== "cf");
+}
+
 export const server = Fastify({
-	loggerInstance
+	loggerInstance,
+	trustProxy: allowedIPs
+});
+
+server.register(fastifyRateLimit, {
+	max: 100,
+	timeWindow: "1 minute"
 });
 
 server.register(cookie);

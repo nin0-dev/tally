@@ -2,6 +2,7 @@
 	"dependencies": {
 		"@fastify/cookie": "^11.1.2",
 		"@fastify/cors": "^11.2.0",
+		"@fastify/rate-limit": "^11.2.0",
 		"argon2": "^0.44.0",
 		"better-sqlite3": "^12.10.0",
 		"esbuild": "^0.28.0",
@@ -14,7 +15,7 @@
 	"scripts": {
 		"generateSchema": "kysely-codegen",
 		"build": "node build.mjs",
-		"start": "node --env-file-if-exists=../.env dist/index.cjs"
+		"start": "node --env-file-if-exists=../.env dist/index.mjs"
 	},
 	"devDependencies": {
 		"@types/better-sqlite3": "^7.6.13",
