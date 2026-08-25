@@ -54,6 +54,7 @@ export const RestAPI = {
 					navigate("/");
 				}
 
+				extra.errors[429] = `Please wait ${request.headers.get("x-ratelimit-reset")} seconds before trying again`;
 				extra.errors[500] = "Internal error. If you are the instance owner, check server logs";
 				extra.errors[400] = "Validation error";
 				extra.errors[401] = "Authentication error";
