@@ -153,7 +153,17 @@ export default function DeckHome({ params: { id } }: { params: { id: string } })
 													Manage access
 												</Menu.Item>
 												<Menu.Divider />
-												<Menu.Item color="red" leftSection={<ArrowBendUpRightIcon size={14} />}>
+												<Menu.Item
+													color="red"
+													leftSection={<ArrowBendUpRightIcon size={14} />}
+													onClick={() =>
+														openContextModal({
+															modal: "transferOwnership",
+															title: "Transfer ownership",
+															innerProps: { deckID: id }
+														})
+													}
+												>
 													Transfer ownership
 												</Menu.Item>
 												<Menu.Item color="red" leftSection={<TrashIcon size={14} />}>

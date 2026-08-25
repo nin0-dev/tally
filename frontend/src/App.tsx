@@ -19,6 +19,7 @@ import DeckHome from "./pages/DeckHome";
 import { useEffect, useState } from "react";
 import { RestAPI } from "./utils/RestAPI";
 import ManageAccessModal from "./components/ManageAccessModal";
+import TransferOwnershipModal from "./components/TransferOwnershipModal";
 
 export default function App() {
 	const colorScheme = useColorScheme();
@@ -48,7 +49,8 @@ export default function App() {
 						login: LoginModal,
 						createDeck: CreateDeckModal,
 						renameDeck: RenameDeckModal,
-						manageAccess: ManageAccessModal
+						manageAccess: ManageAccessModal,
+						transferOwnership: TransferOwnershipModal
 					}}
 				>
 					<AppShell padding="lg" header={{ height: 60 }}>

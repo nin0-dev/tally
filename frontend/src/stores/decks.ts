@@ -22,11 +22,22 @@ export const useDecks = create<{
 	failedDecks: {
 		[id: string]: string;
 	};
+	deleteDeck: (id: string) => void;
 	getDeck: (id: string, force?: boolean) => void;
 }>()((set, get) => ({
 	decks: {},
 	loadingDecks: [],
 	failedDecks: {},
+	deleteDeck(id) {
+		set(state => {
+			const nd = { ...state.decks };
+			delete nd[id];
+
+			return {
+				decks: nd
+			};
+		});
+	},
 	async getDeck(id, force = false) {
 		if ((get().decks[id] || get().loadingDecks.includes(id)) && !force) return;
 		set(state => ({
