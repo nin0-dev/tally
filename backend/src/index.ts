@@ -59,7 +59,8 @@ server.setErrorHandler(async (err, _, res) => {
 await server.register(cors, {
 	origin: [(process.env.ALLOWED_CLIENT_ORIGINS ?? "").trim().split(",")],
 	methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-	credentials: true
+	credentials: true,
+	exposedHeaders: ["X-Ratelimit-Reset"]
 });
 
 runMigrations();
