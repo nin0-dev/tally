@@ -1,8 +1,10 @@
 import { Badge, Button, Flex, Group, Menu, Title, Text } from "@mantine/core";
 import { openContextModal } from "@mantine/modals";
 import { ArrowBendUpRightIcon, CopyIcon, LinkIcon, PencilIcon, TrashIcon, UserGearIcon, UsersIcon } from "@phosphor-icons/react";
-import { showSuccessNotification } from "../utils/notify";
+import { showErrorNotification, showSuccessNotification } from "../utils/notify";
 import { showAlertModal } from "../utils/modals";
+import { RestAPI } from "../utils/RestAPI";
+import { navigate } from "wouter/use-browser-location";
 
 export default function DeckHeader({ deck, isDeckOwnedByYou, authed }) {
 	return (
@@ -66,7 +68,24 @@ export default function DeckHeader({ deck, isDeckOwnedByYou, authed }) {
 						>
 							Copy link
 						</Menu.Item>
-						{authed && <Menu.Item leftSection={<CopyIcon size={14} />}>Make a copy</Menu.Item>}
+						{authed && (
+							<Menu.Item
+								leftSection={<CopyIcon size={14} />}
+								onClick={async () => {
+									const req = await RestAPI.post(`/deck/${deck.id}/copy`, {});
+									if (req.ok) {
+										navigate(`/deck/${req.body.id}`);
+									} else {
+										showErrorNotification({
+											title: "Couldn't copy deck",
+											message: req.error
+										});
+									}
+								}}
+							>
+								Make a copy
+							</Menu.Item>
+						)}
 						{isDeckOwnedByYou && (
 							<>
 								<Menu.Divider />
