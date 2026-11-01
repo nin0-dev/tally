@@ -7,12 +7,7 @@ interface FlashcardProps extends ComponentPropsWithoutRef<"div"> {
 	subtext?: string;
 }
 
-export default function Flashcard({
-	question,
-	answer,
-	subtext = "Press on the card to see the answer",
-	...props
-}: FlashcardProps) {
+export default function Flashcard({ question, answer, subtext = "Press on the card to see the answer", ...props }: FlashcardProps) {
 	const scheme = useComputedColorScheme("light");
 	const [showAnswer, setShowAnswer] = useState(false);
 	const [hideAll, setHideAll] = useState(false);
@@ -40,14 +35,10 @@ export default function Flashcard({
 					shadow="sm"
 					style={{
 						transition: "transform 0.1s ease",
-						transformStyle: "preserve-3d",
 						display: "grid",
 						height: "100%",
-						transform: showAnswer
-							? "rotateX(180deg)"
-							: "rotateX(0deg)",
-						backgroundColor:
-							scheme === "light" ? "#f6f6f6" : undefined,
+						transform: showAnswer ? "rotateX(180deg)" : "rotateX(0deg)",
+						backgroundColor: scheme === "light" ? "#f6f6f6" : undefined,
 						backgroundImage: `${!showAnswer && !hideAll ? `linear-gradient(to right, transparent 20px, var(--mantine-color-red-${scheme === "light" ? 9 : 2}) 20px, var(--mantine-color-red-${scheme === "light" ? 9 : 2}) 22px, transparent 22px),` : ""} linear-gradient(var(--mantine-color-${scheme === "light" ? "gray-2" : "dark-7"}) 2px, transparent 2px)`,
 						backgroundSize: "100% 1rem",
 						backgroundPosition: "center"
@@ -57,8 +48,7 @@ export default function Flashcard({
 						style={{
 							gridArea: "1 / 1",
 							placeSelf: "center",
-							visibility:
-								!hideAll && !showAnswer ? "visible" : "hidden"
+							visibility: !hideAll && !showAnswer ? "visible" : "hidden"
 						}}
 					>
 						{question}
@@ -77,8 +67,7 @@ export default function Flashcard({
 						style={{
 							gridArea: "1 / 1",
 							placeSelf: "center",
-							visibility:
-								!hideAll && showAnswer ? "visible" : "hidden"
+							visibility: !hideAll && showAnswer ? "visible" : "hidden"
 						}}
 					>
 						{answer}
